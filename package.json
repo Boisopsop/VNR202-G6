@@ -12,12 +12,12 @@
     "@tailwindcss/vite": "^4.2.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
-    "autoprefixer": "^10.4.27",
-    "postcss": "^8.5.8",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
     "tailwindcss": "^4.2.1",
-    "typescript": "~5.9.3",
-    "vite": "^8.0.0"
+    "typescript": "~5.7.2",
+    "vite": "^6.3.5"
   },
   "dependencies": {
     "react": "^19.2.4",
