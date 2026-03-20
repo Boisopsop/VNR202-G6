@@ -4,7 +4,10 @@ export default function KetLuan() {
       {/* 1. Banner */}
       <div
         className="section-banner anim-fade-up"
-        style={{ backgroundImage: `url('/images/bg_trong_dong.jpg')` }}
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(215,25,32,0.72), rgba(215,25,32,0.72)), url('/images/bg_trong_dong.jpg')",
+        }}
       >
         <div className="banner-title">Ý Nghĩa-Kết Luận</div>
       </div>

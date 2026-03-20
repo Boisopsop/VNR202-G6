@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 export default function Header() {
   return (
     <>
-      {/* ── Yellow title bar ── */}
+      {/* ── Yellow title bar (không sticky) ── */}
       <header style={{
         background: 'var(--yellow)',
         width: '100%',
@@ -12,6 +12,7 @@ export default function Header() {
         alignItems: 'center',
         padding: '14px 54px',
         gap: 20,
+        position: 'relative',
       }}>
         {/* Logo – fixed width left column */}
         <div style={{ flexShrink: 0, width: 120 }}>
@@ -39,49 +40,52 @@ export default function Header() {
 
         {/* Right balance spacer – same width as logo to keep title centred */}
         <div style={{ flexShrink: 0, width: 120 }} />
+
       </header>
 
-      {/* ── Red navbar ── */}
-      <nav style={{
-        background: 'var(--red)',
-        width: '100%',
-        minHeight: 50,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 32,
-        flexWrap: 'wrap',
-        padding: '6px 20px',
-      }}>
-        {[
-          { to: '/boi-canh',   label: 'BỐI CẢNH' },
-          { to: '/dai-hoi-vi', label: 'ĐẠI HỘI VI' },
-          { to: '/bien-dong',  label: 'BIẾN ĐỘNG' },
-          { to: '/thanh-tuu',  label: 'THÀNH TỰU' },
-          { to: '/ket-luan',   label: 'KẾT LUẬN' },
-          { to: '/tro-choi',   label: 'TRÒ CHƠI' },
-          { to: '/tai-lieu',   label: 'TÀI LIỆU THAM KHẢO' },
-          { to: '/ai-usage',   label: 'AI USAGE' },
-        ].map(({ to, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            style={({ isActive }) => ({
-              color: isActive ? 'var(--red)' : '#fff',
-              background: isActive ? '#fff' : 'transparent',
-              fontWeight: 700,
-              fontSize: 15,
-              textDecoration: 'none',
-              padding: '6px 12px',
-              whiteSpace: 'nowrap',
-              borderRadius: 3,
-              transition: 'background 0.2s, color 0.2s',
-            })}
-          >
-            {label}
-          </NavLink>
-        ))}
-      </nav>
+      {/* ── Red navbar (sticky) ── */}
+      <div className="app-top-nav-wrap">
+        <nav style={{
+          background: 'var(--red)',
+          width: '100%',
+          minHeight: 50,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 32,
+          flexWrap: 'wrap',
+          padding: '6px 20px',
+        }}>
+          {[
+            { to: '/boi-canh',   label: 'BỐI CẢNH' },
+            { to: '/dai-hoi-vi', label: 'ĐẠI HỘI VI' },
+            { to: '/bien-dong',  label: 'BIẾN ĐỘNG' },
+            { to: '/thanh-tuu',  label: 'THÀNH TỰU' },
+            { to: '/ket-luan',   label: 'KẾT LUẬN' },
+            { to: '/tro-choi',   label: 'VIDEO' },
+            { to: '/tai-lieu',   label: 'TÀI LIỆU THAM KHẢO' },
+            { to: '/ai-usage',   label: 'AI USAGE' },
+          ].map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              style={({ isActive }) => ({
+                color: isActive ? 'var(--red)' : '#fff',
+                background: isActive ? '#fff' : 'transparent',
+                fontWeight: 700,
+                fontSize: 15,
+                textDecoration: 'none',
+                padding: '6px 12px',
+                whiteSpace: 'nowrap',
+                borderRadius: 3,
+                transition: 'background 0.2s, color 0.2s',
+              })}
+            >
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+      </div>
     </>
   );
 }

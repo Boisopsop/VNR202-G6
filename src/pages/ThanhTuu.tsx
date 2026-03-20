@@ -99,7 +99,15 @@ function ThanhTuuCarousel({ slides }: { slides: CarouselSlide[] }) {
             <img
               src={slide.imageSrc}
               alt={slide.imageAlt}
-              style={{ width: '100%', height: 280, objectFit: 'cover', borderRadius: 14, boxShadow: '0 4px 14px rgba(0,0,0,0.2)', display: 'block' }}
+              style={{
+                width: '100%',
+                height: 310, // tăng chiều cao để hạn chế bị "cắt khuất"
+                objectFit: 'cover',
+                objectPosition: 'center',
+                borderRadius: 14,
+                boxShadow: '0 4px 14px rgba(0,0,0,0.2)',
+                display: 'block',
+              }}
             />
           </div>
         </div>
@@ -268,7 +276,10 @@ export default function ThanhTuu() {
       {/* 1. Banner */}
       <div
         className="section-banner anim-fade-up"
-        style={{ backgroundImage: `url('/images/bg_trong_dong.jpg')` }}
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(215,25,32,0.72), rgba(215,25,32,0.72)), url('/images/bg_trong_dong.jpg')",
+        }}
       >
         <div className="banner-title">
           Thành tựu của Việt Nam sau gần 40 năm Đổi mới<br />(1986 – nay)

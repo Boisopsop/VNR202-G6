@@ -1,6 +1,17 @@
 import Carousel from '../components/Carousel';
 
 export default function BoiCanh() {
+  const mutedUnderlineLinkStyle = {
+    textDecorationLine: 'underline',
+    textDecorationColor: 'rgba(0,0,0,0.35)',
+    textDecorationThickness: '1px',
+    textUnderlineOffset: 3,
+    color: 'inherit',
+    display: 'inline-block',
+    verticalAlign: 'baseline' as const,
+    whiteSpace: 'normal',
+  } as React.CSSProperties;
+
   const nutThatSlides = [
     {
       header: 'NÚT THẮT THỂ CHẾ: CƠ CHẾ KẾ HOẠCH HÓA TẬP TRUNG',
@@ -75,7 +86,16 @@ export default function BoiCanh() {
           <img
             src="/images/sach_pha_rao.jpg"
             alt="Bìa sách Phá Rào"
-            style={{ width: 200, height: 'auto', margin: '0 auto', display: 'block', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,.25)', objectFit: 'cover' }}
+            style={{
+              width: 320,
+              maxWidth: '100%',
+              height: 'auto',
+              margin: '0 auto',
+              display: 'block',
+              borderRadius: 8,
+              boxShadow: '0 4px 12px rgba(0,0,0,.25)',
+              objectFit: 'cover',
+            }}
           />
         </div>
       ),
@@ -87,7 +107,10 @@ export default function BoiCanh() {
       {/* ── 1. Section Banner ─────────────────────── */}
       <div
         className="section-banner anim-fade-up"
-        style={{ backgroundImage: "url('/images/bg_trong_dong.jpg')" }}
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(215,25,32,0.72), rgba(215,25,32,0.72)), url('/images/bg_trong_dong.jpg')",
+        }}
       >
         <div className="banner-title">
           Bối cảnh trước năm 1986<br />
@@ -104,9 +127,15 @@ export default function BoiCanh() {
           <img key={n} className="hist-img grid-photo" src={`/images/tem_phieu_${n}.jpg`} alt="Ảnh tư liệu tem phiếu" />
         ))}
       </div>
-      <div className="img-caption-full anim-fade-up delay-1">
+      <a
+        className="img-caption-full anim-fade-up delay-1"
+        href="https://vietnamnet.vn/ky-uc-thoi-gian-kho-qua-bo-suu-tap-tem-phieu-so-gao-song-dong-cua-nguoi-tre-8x-723044.html"
+        target="_blank"
+        rel="noreferrer"
+        style={mutedUnderlineLinkStyle}
+      >
         Bộ sưu tập tem phiếu, sổ gạo (VietNamNet)
-      </div>
+      </a>
 
       {/* ── 3. KÝ ỨC card (full-width, text only) ── */}
       <div className="info-card anim-fade-up delay-2">
@@ -150,13 +179,27 @@ export default function BoiCanh() {
         <div className="image-col">
           <img className="hist-img half" src="/images/mau_dich.jpg" alt="Cảnh chen chúc ở cửa hàng mậu dịch" />
           <div className="img-caption">
-            Cảnh chen chúc ở cửa hàng mậu dịch thời bao cấp. (BÁO GIÁO DỤC &amp; THỜI ĐẠI)
+            <a
+              href="https://giaoducthoidai.vn/dau-an-thoi-bao-cap-trong-ky-uc-tien-si-tai-chinh-post656831.html"
+              target="_blank"
+              rel="noreferrer"
+              style={mutedUnderlineLinkStyle}
+            >
+              Cảnh chen chúc ở cửa hàng mậu dịch thời bao cấp. (BÁO GIÁO DỤC &amp; THỜI ĐẠI)
+            </a>
           </div>
         </div>
         <div className="image-col">
           <img className="hist-img half" src="/images/tet_bao_cap.jpg" alt="Tết thời bao cấp" />
           <div className="img-caption">
-            Tết thời bao cấp (Báo và Phát thanh, Truyền hình Ninh Bình)
+            <a
+              href="https://baoninhbinh.org.vn/tet-thoi-bao-cap/d20230112091014465.htm"
+              target="_blank"
+              rel="noreferrer"
+              style={mutedUnderlineLinkStyle}
+            >
+              Tết thời bao cấp (Báo và Phát thanh, Truyền hình Ninh Bình)
+            </a>
           </div>
         </div>
       </div>
@@ -164,10 +207,6 @@ export default function BoiCanh() {
       {/* ── 6. ĐẶC ĐIỂM CỦA NỀN KINH TẾ "TEM PHIẾU" ── */}
       <div className="info-card anim-fade-up">
         <div className="section-heading">Đặc Điểm Của Nền Kinh Tế "Tem Phiếu"</div>
-        <p className="body-text" style={{ fontStyle: 'italic', color: '#555', marginBottom: 12 }}>
-          Thời bao cấp là giai đoạn nào, thời bao cấp kéo dài bao lâu, đồ dùng thời bao cấp trông ra sao?<br />
-          <em>(Báo điện tử của Trung ương Hội Nông dân Việt Nam)</em>
-        </p>
         <p className="body-text" style={{ marginBottom: 10 }}>
           Trong suốt 10 năm của thời kỳ này, bức tranh kinh tế - xã hội được vận hành theo một cơ chế
           hoàn toàn khác biệt:
@@ -187,6 +226,18 @@ export default function BoiCanh() {
             khác theo đầu người.
           </li>
         </ul>
+        <p className="body-text" style={{ fontStyle: 'italic', color: '#555', marginTop: 12, marginBottom: 2 }}>
+          <a
+            href="https://danviet.vn/thoi-bao-cap-la-giai-doan-nao-thoi-bao-cap-keo-dai-bao-lau-do-thoi-bao-cap-trong-the-nao-20221031235047089-d1053541.html"
+            target="_blank"
+            rel="noreferrer"
+            style={{ ...mutedUnderlineLinkStyle, color: '#555' }}
+          >
+            Thời bao cấp là giai đoạn nào, thời bao cấp kéo dài bao lâu, đồ dùng thời bao cấp trông ra sao?
+            <br />
+            <em>(Báo điện tử của Trung ương Hội Nông dân Việt Nam)</em>
+          </a>
+        </p>
       </div>
 
       {/* ── 7. NÚT THẮT carousel ── */}
@@ -204,15 +255,59 @@ export default function BoiCanh() {
         <ul className="body-text" style={{ paddingLeft: 24, lineHeight: 1.9, listStyle: 'disc' }}>
           <li>
             <strong>Cấm vận:</strong> Mỹ và nhiều nước phương Tây áp đặt lệnh cấm vận thương mại khắt
-            khe. Quan hệ Việt Nam - Hoa Kỳ: Từ cấm vận đến hợp tác toàn diện.
+            khe.{' '}
+            <em>
+              <a
+                href="https://kinhtevadubao.vn/quan-he-viet-nam-hoa-ky-tu-cam-van-den-hop-tac-toan-dien-13745.html"
+                target="_blank"
+                rel="noreferrer"
+                style={{ ...mutedUnderlineLinkStyle, display: 'inline', fontStyle: 'italic' }}
+              >
+                Quan hệ Việt Nam - Hoa Kỳ: Từ cấm vận đến hợp tác toàn diện
+              </a>
+            </em>
+            .
           </li>
           <li>
             <strong>Chiến tranh biên giới:</strong> Đất nước vừa thống nhất lại phải gồng mình bảo vệ
             biên giới Tây Nam và biên giới phía Bắc, vắt kiệt nguồn lực quốc gia.
+            <ul
+              style={{
+                paddingLeft: 22,
+                marginTop: 8,
+                lineHeight: 1.9,
+                listStyleType: 'disc',
+                marginBottom: 0,
+                paddingTop: 0,
+                paddingBottom: 0,
+              }}
+            >
+              <li style={{ margin: 0, padding: 0, lineHeight: 1.9 }}>
+                Bài 3: Chiến đấu bảo vệ Tổ quốc ở biên giới Tây Nam, phía Bắc
+              </li>
+              <li style={{ margin: 0, padding: 0, lineHeight: 1.9 }}>
+                Bảo vệ biên giới phía Bắc 1979 – 45 năm cuộc chiến đấu chính nghĩa của Nhân dân Việt Nam
+              </li>
+            </ul>
           </li>
           <li>
             <strong>Điểm tựa lung lay:</strong> Nguồn viện trợ từ Liên Xô và các nước XHCN Đông Âu
             giảm mạnh do bản thân khối này cũng đang bước vào thời kỳ suy thoái trầm trọng.
+            <ul
+              style={{
+                paddingLeft: 22,
+                marginTop: 8,
+                lineHeight: 1.9,
+                listStyleType: 'disc',
+                marginBottom: 0,
+                paddingTop: 0,
+                paddingBottom: 0,
+              }}
+            >
+              <li style={{ margin: 0, padding: 0, lineHeight: 1.9 }}>
+                Vài nét về quan hệ Việt Nam - Liên Xô từ năm 1975 đến năm 1990
+              </li>
+            </ul>
           </li>
         </ul>
       </div>
@@ -270,17 +365,35 @@ export default function BoiCanh() {
       {/* ── 12. Hai leader cards ── */}
       <div className="leaders-row anim-fade-up">
         <div className="leader-card">
-          <img src="/images/logo_fpt2.png" alt="Logo" style={{ height: 50, objectFit: 'contain', display: 'block' }} />
+          <img
+            className="leader-flag"
+            src="/images/logo_header_f3623.png"
+            alt="Cờ Đảng và Quốc kỳ"
+          />
           <img className="avatar-circle" src="/images/truong_chinh.jpg" alt="Trường Chinh" />
-          <div className="leader-name">TRƯỜNG CHINH (CỐ TỔNG BÍ THƯ)</div>
-          <div className="leader-quote-label">Đổi mới hay là chết</div>
-          <div className="leader-quote-main">"Nhìn thẳng vào sự thật, nói rõ sự thật, đánh giá đúng sự thật"</div>
+          <div className="leader-content">
+            <div className="leader-name">
+              <span className="leader-name-main">TRƯỜNG CHINH</span>
+              <span className="leader-name-sub">(CỐ TỔNG BÍ THƯ)</span>
+            </div>
+            <div className="leader-quote-label">Đổi mới hay là chết</div>
+            <div className="leader-quote-main">"Nhìn thẳng vào sự thật, nói rõ sự thật, đánh giá đúng sự thật"</div>
+          </div>
         </div>
         <div className="leader-card">
-          <img src="/images/logo_fpt2.png" alt="Logo" style={{ height: 50, objectFit: 'contain', display: 'block' }} />
+          <img
+            className="leader-flag"
+            src="/images/logo_header_f3623.png"
+            alt="Cờ Đảng và Quốc kỳ"
+          />
           <img className="avatar-circle" src="/images/nguyen_van_linh.jpg" alt="Nguyễn Văn Linh" />
-          <div className="leader-name">NGUYỄN VĂN LINH (CỐ TỔNG BÍ THƯ)</div>
-          <div className="leader-quote-main">Những việc cần làm ngay</div>
+          <div className="leader-content">
+            <div className="leader-name">
+              <span className="leader-name-main">NGUYỄN VĂN LINH</span>
+              <span className="leader-name-sub">(CỐ TỔNG BÍ THƯ)</span>
+            </div>
+            <div className="leader-quote-main">Những việc cần làm ngay</div>
+          </div>
         </div>
       </div>
 
@@ -291,9 +404,33 @@ export default function BoiCanh() {
 
       {/* ── 14. Video ── */}
       <div className="video-section anim-fade-up">
-        <div className="video-placeholder">
-          <div className="play-btn" />
+        <div
+          style={{
+            fontFamily: "'Be Vietnam Pro', sans-serif",
+            fontWeight: 700,
+            color: 'var(--red)',
+            textTransform: 'uppercase',
+            textAlign: 'center',
+            fontSize: 22,
+            marginBottom: 14,
+          }}
+        >
+          MỞ ĐẦU ĐẠI HỘI VI
         </div>
+        <iframe
+          src="https://www.youtube.com/embed/BXScTu7Qfpk"
+          title="MỞ ĐẦU ĐẠI HỘI VI"
+          style={{
+            width: '100%',
+            aspectRatio: '710 / 439',
+            border: 'none',
+            borderRadius: 8,
+            display: 'block',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+          }}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
       </div>
     </>
   );

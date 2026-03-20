@@ -27,7 +27,12 @@ const listStyle: React.CSSProperties = {
 
 const liStyle: React.CSSProperties = { marginBottom: 10 };
 
-const underlineStyle: React.CSSProperties = { textDecorationLine: 'underline' };
+const underlineStyle: React.CSSProperties = {
+  textDecorationLine: 'underline',
+  textDecorationColor: 'rgba(0,0,0,0.35)',
+  textDecorationThickness: '1px',
+  textUnderlineOffset: '3px',
+};
 
 export default function TaiLieuThamKhao() {
   return (
@@ -35,7 +40,10 @@ export default function TaiLieuThamKhao() {
       {/* Banner */}
       <div
         className="section-banner anim-fade-up"
-        style={{ backgroundImage: `url('/images/bg_trong_dong.jpg')` }}
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(215,25,32,0.72), rgba(215,25,32,0.72)), url('/images/bg_trong_dong.jpg')",
+        }}
       >
         <div className="banner-title">Tài Liệu Tham Khảo</div>
       </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 // ── 14 NHÂN VẬT ───────────────────────────────────────────────────────────────
 const figures = [
@@ -39,6 +40,15 @@ function PortraitCarousel() {
   const prev = figures[(idx - 1 + n) % n];
   const curr = figures[idx];
   const next = figures[(idx + 1) % n];
+
+  const splitNameAndYears = (fullName: string) => {
+    // Ví dụ: "Nguyễn Thanh Bình (1920–2008)"
+    const match = fullName.match(/^(.*?)(\s*\(.*\))$/);
+    if (!match) return { person: fullName, years: '' };
+    return { person: match[1].trim(), years: match[2].trim() };
+  };
+
+  const { person, years } = splitNameAndYears(curr.name);
 
   const arrowBtn = (label: string, onClick: () => void, dir: 'left' | 'right') => (
     <button onClick={onClick} aria-label={label} style={{
@@ -87,17 +97,41 @@ function PortraitCarousel() {
 
           {/* Current – main, larger, with text */}
           <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-            <div style={{ borderRadius: 18, overflow: 'hidden', width: 240, height: 310,
+            <div style={{ borderRadius: 18, overflow: 'hidden', width: 260, height: 310,
               boxShadow: '0 10px 32px rgba(0,0,0,0.6)', border: '3px solid rgba(255,255,255,0.7)' }}>
               <img src={curr.img} alt={curr.name}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'grayscale(100%)' }} />
             </div>
-            <div style={{ color: '#FFFF00', fontWeight: 700, fontStyle: 'italic', fontSize: 19,
-              textAlign: 'center', maxWidth: 300, textShadow: '0 2px 8px rgba(0,0,0,0.6)', lineHeight: 1.45 }}>
-              Đồng chí {curr.name}
+            <div
+              style={{
+                color: '#FFFF00',
+                fontWeight: 700,
+                fontStyle: 'italic',
+                fontSize: 19,
+                textAlign: 'center',
+                maxWidth: 300,
+                textShadow: '0 2px 8px rgba(0,0,0,0.6)',
+                lineHeight: 1.35,
+              }}
+            >
+              Đồng chí {person}
+              {years ? <br /> : null}
+              {years ? years : null}
             </div>
-            <div style={{ color: '#fff', fontSize: 15, textAlign: 'center', maxWidth: 300,
-              lineHeight: 1.6, opacity: 0.93 }}>
+            <div
+              style={{
+                color: '#fff',
+                fontSize: 14,
+                textAlign: 'center',
+                maxWidth: 360,
+                lineHeight: 1.55,
+                opacity: 0.93,
+                // Tránh tình trạng xuống dòng “lẻ” sau dấu phẩy
+                whiteSpace: 'normal',
+                overflowWrap: 'normal',
+                wordBreak: 'keep-all',
+              }}
+            >
               {curr.role}
             </div>
           </div>
@@ -202,85 +236,752 @@ function HorizontalLessons() {
   );
 }
 
-// ── NỘI DUNG ĐỔI MỚI – 4 stacked yellow buttons ───────────────────────────────
+// ── NỘI DUNG ĐƯỜNG LỐI ĐỔI MỚI (click nút hiển thị thẻ) ───────────────────────
+const doiMoiLinkStyle: CSSProperties = {
+  fontFamily: 'Be Vietnam Pro, sans-serif',
+  fontStyle: 'italic',
+  fontWeight: 400,
+  fontSize: 24,
+  lineHeight: '30px',
+  textDecorationLine: 'underline',
+  color: '#FFFF00',
+  display: 'inline-block',
+};
+
+function DoiMoiOuterCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      style={{
+        width: '100%',
+        maxWidth: 'var(--content-max)',
+        background: '#FFF3F3',
+        borderRadius: 42,
+        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+        padding: '48px',
+        fontFamily: 'Be Vietnam Pro, sans-serif',
+      }}
+    >
+      <div
+        style={{
+          width: 359,
+          maxWidth: '100%',
+          margin: '0 auto 28px',
+          fontWeight: 700,
+          fontSize: 36,
+          lineHeight: '46px',
+          textAlign: 'center',
+          color: '#D71920',
+          textTransform: 'uppercase',
+        }}
+      >
+        {title}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function DoiMoiRedCard({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return (
+    <div
+      style={{
+        background: '#D71920',
+        borderRadius: 40,
+        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+        padding: '48px',
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// 1) ĐỔI MỚI TƯ DUY (hiển thị như hình 1 + ảnh hình 2)
+function DoiMoiTuDuyContent() {
+  return (
+    <DoiMoiOuterCard title="ĐỔI MỚI TƯ DUY">
+      <div style={{ fontSize: 24, lineHeight: '30px', fontWeight: 400, color: '#000' }}>
+        <p style={{ margin: 0 }}>
+          Đại hội VI nhấn mạnh đổi mới tư duy lãnh đạo và quản lý, với tinh thần:
+        </p>
+        <ul style={{ margin: '10px 0 0', paddingLeft: 28, listStyleType: 'disc', lineHeight: '30px' }}>
+          <li style={{ fontWeight: 700, margin: '3px 0' }}>Nhìn thẳng vào sự thật</li>
+          <li style={{ fontWeight: 700, margin: '3px 0' }}>Đánh giá đúng thực trạng đất nước</li>
+          <li style={{ fontWeight: 700, margin: '3px 0' }}>Khắc phục tư duy chủ quan, duy ý chí</li>
+        </ul>
+        <p style={{ margin: '12px 0 0' }}>
+          Đây là bước đột phá quan trọng, tạo cơ sở cho các chính sách đổi mới sau này.
+        </p>
+      </div>
+
+      <div
+        style={{
+          marginTop: 28,
+          fontWeight: 700,
+          fontSize: 32,
+          lineHeight: '40px',
+          color: '#000',
+        }}
+      >
+        Dẫn chứng thực tế:
+      </div>
+
+      <div style={{ marginTop: 22 }}>
+        <DoiMoiRedCard>
+          <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start', justifyContent: 'center', width: '100%' }}>
+            {/* Cột trái theo figma: caption container rộng hơn ảnh để căn giữa đúng */}
+            <div style={{ flex: '0 0 467px' }}>
+              <img
+                src="/images/truong_chinh_ttxvn.png"
+                alt="Đồng chí Trường Chinh đọc Báo cáo chính trị tại Đại hội lần thứ VI của Đảng, tháng 12.1986. (Ảnh tư liệu: TTXVN)"
+                style={{
+                  width: 397,
+                  height: 308,
+                  objectFit: 'cover',
+                  display: 'block',
+                  margin: '0 auto',
+                }}
+              />
+              <div
+                style={{
+                  marginTop: 0,
+                  height: 48,
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                  fontSize: 16,
+                  lineHeight: '20px',
+                  textAlign: 'center',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 8px',
+                }}
+              >
+                Đồng chí Trường Chinh đọc Báo cáo chính trị tại Đại hội lần thứ VI của Đảng, tháng 12.1986. (Ảnh tư liệu: TTXVN)
+              </div>
+            </div>
+
+            <div
+              style={{
+                flex: '0 0 635px',
+                paddingTop: 0,
+                // Căn nội dung giữa ô đỏ như Figma: trái là ảnh 308px + caption 48px
+                height: 356,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  fontWeight: 400,
+                  fontSize: 24,
+                  lineHeight: '30px',
+                  color: '#FFFFFF',
+                }}
+              >
+                Trước 1986, Nhà nước ngăn sông cấm chợ, coi thương mại tư nhân là “đầu cơ tích trữ”.{' '}
+                <span style={{ marginLeft: 10 }}>
+                  <a
+                    href="https://www.qdnd.vn/80-nam-cach-mang-thang-tam-va-quoc-khanh-2-9/su-truong-thanh-ve-tu-duy-phat-trien-843099"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={doiMoiLinkStyle}
+                  >
+                    Link tham khảo
+                  </a>
+                </span>
+              </p>
+
+              <p
+                style={{
+                  margin: '22px 0 0',
+                  fontWeight: 400,
+                  fontSize: 24,
+                  lineHeight: '30px',
+                  color: '#FFFFFF',
+                }}
+              >
+                Báo cáo chính trị tại Đại hội VI do Tổng Bí thư Trường Chinh trình bày đã nhấn mạnh yêu cầu phải tôn trọng quy luật khách quan, coi đây là điều kiện đảm bảo sự lãnh đạo đúng đắn của Đảng.{' '}
+                <span style={{ marginLeft: 10 }}>
+                  <a
+                    href="https://daihoidangtoanquoc.vn/dai-hoi-dai-bieu-toan-quoc-lan-thu-vi-cua-dang-post1469.html"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={doiMoiLinkStyle}
+                  >
+                    Link tham khảo
+                  </a>
+                </span>
+              </p>
+            </div>
+          </div>
+        </DoiMoiRedCard>
+      </div>
+
+      <div
+        style={{
+          marginTop: 24,
+          fontWeight: 700,
+          fontSize: 24,
+          lineHeight: '30px',
+          color: '#000000',
+        }}
+      >
+        =&gt; Đây chính là tiền đề để chúng ta chấp nhận{' '}
+        <span style={{ color: 'var(--red)' }}>Kinh tế nhiều thành phần</span>. Nếu không “nhìn thẳng” vào sự thất bại của mô hình cũ, chúng ta đã không có thị trường năng động như hôm nay.
+      </div>
+    </DoiMoiOuterCard>
+  );
+}
+
+// 2) ĐỔI MỚI KINH TẾ (hiển thị như hình 3 + ảnh hình 4)
+function DoiMoiKinhTeContent() {
+  // Kinh tế: khung ngoài cố định, còn nội dung dài chỉ cuộn bên trong.
+  return (
+    <div
+      style={{
+        width: '100%',
+        maxWidth: 'var(--content-max)',
+        background: '#FFF3F3',
+        borderRadius: 42,
+        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+        padding: '40px',
+        fontFamily: 'Be Vietnam Pro, sans-serif',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        minHeight: 0, // allow scroll child to size correctly
+      }}
+    >
+      <div
+        style={{
+          width: 359,
+          maxWidth: '100%',
+          margin: '0 auto 18px',
+          fontWeight: 700,
+          fontSize: 36,
+          lineHeight: '46px',
+          textAlign: 'center',
+          color: '#D71920',
+          textTransform: 'uppercase',
+        }}
+      >
+        ĐỔI MỚI KINH TẾ
+      </div>
+
+      <div className="doi-moi-scroll">
+        {/* Top: 2 cơ chế vàng + mũi tên */}
+        <div style={{ marginTop: 0 }}>
+          <div style={{ fontSize: 26, fontWeight: 700, color: '#111', marginBottom: 14, textAlign: 'left' }}>
+            Chuyển đổi mô hình:
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 18, flexWrap: 'nowrap' }}>
+            <div style={{
+              width: 280,
+              height: 195,
+              background: '#F8FA7D',
+              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+              borderRadius: 36,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              padding: 18,
+              fontWeight: 700,
+              fontSize: 20,
+              lineHeight: '25px',
+              color: '#000',
+            }}>
+              Cơ chế kế hoạch<br />hóa tập trung,<br />quan liêu bao cấp
+            </div>
+
+            <div style={{ width: 91, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <svg width="91" height="34" viewBox="0 0 60 34" fill="none">
+                <path d="M10 17H44" stroke="#000" strokeWidth="3" strokeLinecap="round" />
+                <path d="M38 9L46 17L38 25" stroke="#000" strokeWidth="3" strokeLinejoin="round" />
+              </svg>
+            </div>
+
+            <div style={{
+              width: 280,
+              height: 195,
+              background: '#F8FA7D',
+              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+              borderRadius: 36,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              padding: 18,
+              fontWeight: 700,
+              fontSize: 20,
+              lineHeight: '25px',
+              color: '#000',
+            }}>
+              Nền kinh tế hàng hóa<br />
+              nhiều thành phần vẫn<br />
+              vận hành theo cơ<br />
+              chế thị trường<br />
+              có sự quản lý của<br />
+              Nhà nước
+            </div>
+          </div>
+        </div>
+
+        {/* Nội dung đen */}
+        <div style={{ marginTop: 18, fontSize: 21, lineHeight: '27px', fontWeight: 400, color: '#000' }}>
+          <p style={{ margin: 0 }}>
+            <strong>Điều chỉnh cơ cấu kinh tế:</strong> phát triển nông nghiệp, công nghiệp nhẹ và cơ sở hạ tầng; nông nghiệp là mặt trận hàng đầu.
+          </p>
+
+          <p style={{ marginTop: 14, fontWeight: 700 }}>
+            Ba chương trình kinh tế:
+          </p>
+          <ul style={{ margin: '6px 0 0', paddingLeft: 28, listStyleType: 'disc' }}>
+            <li>Lương thực – thực phẩm</li>
+            <li>Hàng tiêu dùng</li>
+            <li>Hàng xuất khẩu</li>
+          </ul>
+
+          <p style={{ marginTop: 14 }}>
+            <span style={{ color: '#000', fontWeight: 700 }}>Nền kinh tế nhiều thành phần:</span> gồm kinh tế nhà nước, tập thể, tư nhân, cá thể và có vốn đầu tư nước ngoài.
+          </p>
+
+          <p style={{ marginTop: 14 }}>
+            <strong>Đổi mới cơ chế quản lý:</strong> xóa dần bao cấp, tăng quyền tự chủ cho doanh nghiệp.
+          </p>
+        </div>
+
+        {/* Dẫn chứng */}
+        <div style={{ marginTop: 20, fontWeight: 700, fontSize: 27, lineHeight: '34px', color: '#000' }}>
+          Dẫn chứng thực tế:
+        </div>
+
+        <div style={{ marginTop: 16 }}>
+          <DoiMoiRedCard>
+            <div style={{ width: '100%', display: 'flex', gap: 24, alignItems: 'flex-start', justifyContent: 'center' }}>
+              <img
+                src="/images/khoan10.jpg"
+                alt="Khoán 10 (1988)"
+                style={{
+                  width: 1125,
+                  maxWidth: '100%',
+                  height: 311,
+                  objectFit: 'cover',
+                  display: 'block',
+                  borderRadius: 12,
+                }}
+              />
+            </div>
+
+            <a
+              href="https://www.vietnamplus.vn/tu-bai-hoc-khoan-10-den-cuong-quoc-xuat-khau-gao-post619310.vnp"
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                marginTop: 14,
+                fontStyle: 'italic',
+                fontWeight: 400,
+                fontSize: 16,
+                lineHeight: '20px',
+                textAlign: 'center',
+                textDecorationLine: 'underline',
+                color: '#fff',
+                display: 'block',
+              }}
+            >
+              Chỉ sau một năm ban hành Nghị quyết 10, từ một nước thiếu lương thực triền miên, đến năm 1989, sản lượng lúa gạo đạt con số 21,5 triệu tấn và lần đầu tiên Việt Nam xuất khẩu được 1,2 triệu tấn lúa gạo. Trong ảnh: Thực hiện khoán gọn theo đơn giá, vụ mùa năm 1988, HTX Nhân Khang, huyện Lý Nhân, tỉnh Hà Nam Ninh thu hoạch lúa đạt năng suất 42 tạ/ha, đưa năng suất cả năm lên 92,5 tạ/ha.
+              <br />
+              (Ảnh: Thế Thuận/TTXVN).
+            </a>
+
+            <div style={{ marginTop: 14 }}>
+              <p style={{ margin: 0, fontWeight: 400, fontSize: 21, lineHeight: '27px', color: '#fff' }}>
+                Trước 1986, mua một cân gạo hay miếng thịt cũng cần sổ gạo, tem phiếu. Sau Đại hội VI, hàng hóa được lưu thông tự do theo giá thị trường.
+              </p>
+
+              <p style={{ marginTop: 16, fontWeight: 400, fontSize: 21, lineHeight: '27px', color: '#fff' }}>
+                Khoán 10 (1988) là minh chứng tiêu biểu cho việc hiện thực hóa tư duy đổi mới của Đại hội VI trong lĩnh vực nông nghiệp.
+              </p>
+
+              <div style={{ marginTop: 10, textAlign: 'center' }}>
+                <a
+                  href="https://tapchicongsan.org.vn/en_US/sinh-hoat-tu-tuong/-/2018/25235/suc-song-ve-ly-luan-va-thuc-tien-cua-nghi-quyet-10%2C-bo-chinh-tri-khoa-vi-trong-25-nam-qua.aspx"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={doiMoiLinkStyle}
+                >
+                  Link tham khảo
+                </a>
+              </div>
+            </div>
+          </DoiMoiRedCard>
+        </div>
+
+        <div style={{ marginTop: 18, fontWeight: 700, fontSize: 21, lineHeight: '27px', color: '#000' }}>
+          =&gt; <span style={{ color: 'var(--red)' }}>Đây là bước chuyển quan trọng</span>, mở đường cho việc phát triển <span style={{ color: 'var(--red)' }}>nền kinh tế hàng hóa nhiều thành phần</span> và tạo nền tảng cho <span style={{ color: 'var(--red)' }}>sự tăng trưởng của kinh tế Việt Nam trong thời kỳ Đổi mới</span>.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 3) ĐỔI MỚI XÃ HỘI (hiển thị như hình 5 + ảnh hình 6)
+function DoiMoiXaHoiContent() {
+  return (
+    <DoiMoiOuterCard title="ĐỔI MỚI XÃ HỘI">
+      <div style={{ fontSize: 24, lineHeight: '30px', fontWeight: 400, color: '#000' }}>
+        Tại Đại hội VI của Đảng Cộng sản Việt Nam, đổi mới không chỉ giới hạn ở kinh tế mà còn hướng tới cải thiện đời sống xã hội và phát huy vai trò của con người. Đại hội nhấn mạnh phát triển kinh tế phải gắn với giải quyết việc làm, nâng cao đời sống nhân dân và phát triển giáo dục, văn hóa, y tế.
+      </div>
+
+      <div
+        style={{
+          marginTop: 24,
+          fontWeight: 700,
+          fontSize: 32,
+          lineHeight: '40px',
+          color: '#000',
+        }}
+      >
+        Dẫn chứng thực tế:
+      </div>
+
+      <div style={{ marginTop: 18 }}>
+        <DoiMoiRedCard>
+          <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start', justifyContent: 'center', width: '100%' }}>
+            {/* Left image block */}
+            <div style={{ flex: '0 0 467px' }}>
+              <img
+                src="/images/lang_bac.jpg"
+                alt="Lai Châu - CT135"
+                style={{
+                  width: 421,
+                  height: 287,
+                  objectFit: 'cover',
+                  display: 'block',
+                  margin: '0 auto',
+                }}
+              />
+              <div
+                style={{
+                  marginTop: 12,
+                  height: 48,
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                  fontSize: 16,
+                  lineHeight: '20px',
+                  textAlign: 'center',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 6px',
+                }}
+              >
+                Những bản làng vùng ĐBKK của tỉnh Lai Châu dần đổi mới một phần nhờ nguồn vốn hỗ trợ của CT135. (Ảnh TL)
+              </div>
+            </div>
+
+            {/* Right text block */}
+            <div
+              style={{
+                flex: '0 0 635px',
+                height: 347,
+                paddingTop: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  fontWeight: 400,
+                  fontSize: 24,
+                  lineHeight: '30px',
+                  color: '#FFFFFF',
+                }}
+              >
+                Sau Đại hội VI, nhiều chính sách xã hội được triển khai nhằm cải thiện đời sống nhân dân và giảm nghèo. Tiêu biểu là các chương trình phát triển vùng khó khăn như Chương trình 135, hỗ trợ xây dựng cơ sở hạ tầng, trường học và nâng cao đời sống cho người dân vùng miền núi.
+              </p>
+              <div style={{ marginTop: 16, textAlign: 'center' }}>
+                <a
+                  href="https://dantocphattrien.vietnamnet.vn/chuong-trinh-135-nhin-lai-mot-chang-duong-1619692299579.htm"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={doiMoiLinkStyle}
+                >
+                  Link tham khảo
+                </a>
+              </div>
+            </div>
+          </div>
+        </DoiMoiRedCard>
+      </div>
+
+      <div
+        style={{
+          marginTop: 18,
+          fontWeight: 700,
+          fontSize: 24,
+          lineHeight: '30px',
+          color: '#000000',
+        }}
+      >
+        =&gt; Đây là{' '}
+        <span style={{ color: 'var(--red)' }}>bước chuyển quan trọng trong tư duy phát triển</span>, khẳng định{' '}
+        <span style={{ color: 'var(--red)' }}>con người vừa là mục tiêu vừa là động lực</span> của công cuộc đổi mới.
+      </div>
+    </DoiMoiOuterCard>
+  );
+}
+
+// 4) ĐỔI MỚI ĐỐI NGOẠI (hiển thị như hình 7 + ảnh hình 8)
+function DoiMoiDoiNgoaiContent() {
+  return (
+    <DoiMoiOuterCard title="ĐỔI MỚI ĐỐI NGOẠI">
+      <div style={{ fontSize: 24, lineHeight: '30px', fontWeight: 400, color: '#000' }}>
+        Đại hội VI cũng đề ra chủ trương đổi mới tư duy đối ngoại, mở rộng quan hệ hợp tác quốc tế và kết hợp sức mạnh dân tộc với sức mạnh của thời đại. Điều này đánh dấu sự chuyển biến từ tư duy đối ngoại khép kín sang mở cửa và hội nhập quốc tế.
+      </div>
+
+      <div
+        style={{
+          marginTop: 24,
+          fontWeight: 700,
+          fontSize: 32,
+          lineHeight: '40px',
+          color: '#000',
+        }}
+      >
+        Dẫn chứng thực tế:
+      </div>
+
+      <div style={{ marginTop: 18 }}>
+        <DoiMoiRedCard>
+          <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start', justifyContent: 'center', width: '100%' }}>
+            {/* Left image block (fixed like Figma) */}
+            <div style={{ flex: '0 0 467px' }}>
+              <img
+                src="/images/asean_bntng.jpg"
+                alt="Bộ trưởng Ngoại giao Nguyễn Mạnh Cầm ký kết gia nhập ASEAN 28/7/1995"
+                style={{
+                  width: 421,
+                  height: 287,
+                  objectFit: 'cover',
+                  display: 'block',
+                  margin: '0 auto',
+                }}
+              />
+              <div
+                style={{
+                  marginTop: 12,
+                  height: 48,
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                  fontSize: 16,
+                  lineHeight: '20px',
+                  textAlign: 'center',
+                  color: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 6px',
+                }}
+              >
+                Bộ trưởng Ngoại giao Nguyễn Mạnh Cầm tại Lễ ký kết Việt Nam chính thức gia nhập ASEAN ngày 28/7/1995. (Nguồn: Ảnh tư liệu)
+              </div>
+            </div>
+
+            {/* Right text block (fixed to avoid narrow/wrapped text) */}
+            <div
+              style={{
+                flex: '0 0 635px',
+                height: 347,
+                paddingTop: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  fontWeight: 400,
+                  fontSize: 24,
+                  lineHeight: '30px',
+                  color: '#FFFFFF',
+                }}
+              >
+                Sau công cuộc đổi mới, Việt Nam từng bước mở rộng quan hệ quốc tế và tham gia nhiều tổ chức quan trọng như Hiệp hội các quốc gia Đông Nam Á (ASEAN), đồng thời bình thường hóa quan hệ với Hoa Kỳ vào năm 1995.
+              </p>
+              <div style={{ marginTop: 16, textAlign: 'center' }}>
+                <a
+                  href="https://hcmcpv.org.vn/tin-tuc/gia-nhap-asean-buoc-dot-pha-trong-doi-moitu-duy-doi-ngoai-cua-viet-nam-1491881281"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={doiMoiLinkStyle}
+                >
+                  Link tham khảo
+                </a>
+              </div>
+            </div>
+          </div>
+        </DoiMoiRedCard>
+      </div>
+
+      <div
+        style={{
+          marginTop: 18,
+          fontWeight: 700,
+          fontSize: 24,
+          lineHeight: '30px',
+          color: '#000000',
+        }}
+      >
+        =&gt; Đây là{' '}
+        <span style={{ color: 'var(--red)' }}>nền tảng quan trọng</span> giúp Việt Nam từng bước{' '}
+        <span style={{ color: 'var(--red)' }}>hội nhập quốc tế</span> và thúc đẩy sự phát triển kinh tế – xã hội trong thời kỳ đổi mới.
+      </div>
+    </DoiMoiOuterCard>
+  );
+}
+
 const doiMoiData = [
   {
     label: 'ĐỔI MỚI TƯ DUY',
-    content: (
-      <div className="body-text" style={{ padding: '0 8px' }}>
-        <p><strong>Nhận thức rõ thực trạng:</strong> Đảng thẳng thắn nhìn nhận những sai lầm trong tư duy lãnh đạo trước đây, đặc biệt là bệnh chủ quan duy ý chí và giáo điều rập khuôn.</p>
-        <p style={{ marginTop: 10 }}><strong>Đổi mới tư duy lý luận:</strong> Từ bỏ mô hình kinh tế kế hoạch hóa tập trung thuần túy để chuyển sang tư duy kinh tế hàng hóa nhiều thành phần, vận hành theo cơ chế thị trường có sự quản lý của Nhà nước.</p>
-        <p style={{ marginTop: 10 }}><strong>Tinh thần "nhìn thẳng vào sự thật":</strong> Đây là tư tưởng chủ đạo của Đại hội VI: đánh giá đúng sự thật, nói thẳng sự thật và hành động theo sự thật. → Đây là cuộc cách mạng trong tư duy lãnh đạo, tạo nền tảng tư tưởng vững chắc cho toàn bộ công cuộc Đổi Mới.</p>
-      </div>
-    ),
+    content: <DoiMoiTuDuyContent />,
   },
   {
     label: 'ĐỔI MỚI KINH TẾ',
-    content: (
-      <div className="body-text" style={{ padding: '0 8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16, flexWrap: 'wrap' }}>
-          <div style={{ background: 'var(--yellow-light)', borderRadius: 12, padding: '10px 16px', fontWeight: 700, fontSize: 15, textAlign: 'center', flex: 1, minWidth: 140 }}>
-            Cơ chế kế hoạch hóa<br />tập trung quan liêu bao cấp
-          </div>
-          <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--red)' }}>→</div>
-          <div style={{ background: 'var(--yellow-light)', borderRadius: 12, padding: '10px 16px', fontWeight: 700, fontSize: 15, textAlign: 'center', flex: 1, minWidth: 140 }}>
-            Nền kinh tế hàng hóa nhiều thành phần,<br />vận hành theo cơ chế thị trường
-          </div>
-        </div>
-        <p><strong>Xóa bỏ cơ chế bao cấp:</strong> Giá cả hàng hóa được xác định theo thị trường.</p>
-        <p style={{ marginTop: 8 }}><strong>Thừa nhận kinh tế nhiều thành phần:</strong> Kinh tế tư nhân, hộ gia đình, vốn nước ngoài được tham gia sản xuất.</p>
-        <p style={{ marginTop: 8 }}><strong>Khoán trong nông nghiệp (NQ 10/1988):</strong> Giao đất cho hộ nông dân tự chủ, phần còn lại tự do buôn bán.</p>
-      </div>
-    ),
+    content: <DoiMoiKinhTeContent />,
   },
   {
     label: 'ĐỔI MỚI XÃ HỘI',
-    content: (
-      <div className="body-text" style={{ padding: '0 8px' }}>
-        <p><strong>Dân chủ hóa đời sống xã hội:</strong> Mở rộng quyền tự do ngôn luận, báo chí trong khuôn khổ pháp luật; tăng cường đối thoại giữa Đảng, Nhà nước và nhân dân.</p>
-        <p style={{ marginTop: 10 }}><strong>Phát triển văn hóa – giáo dục:</strong> Chú trọng đầu tư cho giáo dục và đào tạo, xây dựng nền văn hóa tiên tiến, đậm đà bản sắc dân tộc.</p>
-        <p style={{ marginTop: 10 }}><strong>Cải thiện phúc lợi xã hội:</strong> Từng bước cải thiện đời sống nhân dân, xây dựng hệ thống an sinh xã hội.</p>
-      </div>
-    ),
+    content: <DoiMoiXaHoiContent />,
   },
   {
     label: 'ĐỔI MỚI ĐỐI NGOẠI',
-    content: (
-      <div className="body-text" style={{ padding: '0 8px' }}>
-        <p><strong>Mở cửa và hội nhập quốc tế:</strong> Đa phương hóa, đa dạng hóa quan hệ quốc tế theo phương châm "Việt Nam muốn làm bạn với tất cả các nước".</p>
-        <p style={{ marginTop: 10 }}><strong>Bình thường hóa quan hệ:</strong> Trung Quốc (1991), Hoa Kỳ (1995). Gia nhập ASEAN (1995), WTO (2007).</p>
-        <p style={{ marginTop: 10 }}><strong>Thu hút đầu tư nước ngoài:</strong> Luật Đầu tư nước ngoài (1987) tạo hành lang pháp lý thu hút vốn và công nghệ. → Phá vỡ thế bao vây cô lập, mở ra thời kỳ hội nhập toàn diện.</p>
-      </div>
-    ),
+    content: <DoiMoiDoiNgoaiContent />,
   },
 ];
 
 // ── Modal overlay for đổi mới detail ──────────────────────────────────────────
 function DoiMoiModal({ item, onClose }: { item: typeof doiMoiData[0]; onClose: () => void }) {
+  const measureRef = useRef<HTMLDivElement | null>(null);
+  const [scale, setScale] = useState(1);
+
+  const isEconomy = item.label === 'ĐỔI MỚI KINH TẾ';
+
+  useEffect(() => {
+    if (isEconomy) {
+      // Economy: giữ khung cố định, không scale (nội dung sẽ cuộn bên trong).
+      setScale(1);
+      return;
+    }
+
+    const recalc = () => {
+      const el = measureRef.current;
+      if (!el) return;
+
+      const available = window.innerHeight - 6;
+      const contentHeight = el.scrollHeight || el.getBoundingClientRect().height || 1;
+      const next = Math.min(1, available / contentHeight);
+      setScale(Number.isFinite(next) ? next : 1);
+    };
+
+    recalc();
+    window.addEventListener('resize', recalc);
+    return () => window.removeEventListener('resize', recalc);
+  }, [item.label, isEconomy]);
+
   return (
-    <div onClick={onClose} style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.62)', zIndex: 1000,
-      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
-    }}>
-      <div onClick={e => e.stopPropagation()} style={{
-        background: 'var(--pink-light)', borderRadius: 32, padding: '40px 44px',
-        maxWidth: 820, width: '100%', maxHeight: '80vh', overflowY: 'auto',
-        boxShadow: '0 12px 48px rgba(0,0,0,0.35)',
-        animation: 'fadeInUp 0.3s ease-out both',
-      }}>
-        {/* Modal header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
-          <h2 style={{ fontFamily: 'Be Vietnam Pro', fontWeight: 700, fontSize: 26,
-            color: 'var(--red)', textTransform: 'uppercase' }}>
-            {item.label}
-          </h2>
-          <button onClick={onClose} style={{
-            background: 'var(--red)', border: 'none', cursor: 'pointer', color: '#fff',
-            width: 36, height: 36, borderRadius: '50%', fontSize: 18, fontWeight: 700,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-          }}>✕</button>
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(0,0,0,0.42)',
+        zIndex: 1000,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 0,
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: '100%',
+          maxWidth: 1242,
+          height: '100vh',
+          position: 'relative',
+          animation: 'fadeInUp 0.3s ease-out both',
+        }}
+      >
+        {/* Scale + center so top/bottom whitespace stays balanced */}
+        <div
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: isEconomy ? 'translate(-50%, -50%)' : `translate(-50%, -50%) scale(${scale})`,
+            transformOrigin: 'center center',
+            width: '100%',
+          }}
+        >
+          <div
+            ref={measureRef}
+            style={{
+              position: 'relative',
+              width: '100%',
+              height: isEconomy ? 'calc(100vh - 30px)' : undefined,
+              maxHeight: isEconomy ? 'calc(100vh - 30px)' : undefined,
+              overflow: 'hidden',
+              overflowX: 'hidden',
+            }}
+          >
+            <button
+              onClick={onClose}
+              style={{
+                position: 'absolute',
+                top: 20,
+                right: 20,
+                background: '#D71920',
+                border: 'none',
+                cursor: 'pointer',
+                color: '#fff',
+                width: 38,
+                height: 38,
+                borderRadius: '50%',
+                fontSize: 18,
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
+                zIndex: 2,
+              }}
+            >
+              ✕
+            </button>
+            {item.content}
+          </div>
         </div>
-        {item.content}
       </div>
     </div>
   );
@@ -342,7 +1043,14 @@ export default function DaiHoiVI() {
           style={{ width: 160, height: 90, objectFit: 'contain', display: 'block',
             margin: '0 auto 18px', position: 'relative', zIndex: 1 }}
         />
-        <div className="banner-title">
+        <div
+          className="banner-title"
+          style={{
+            // Tăng cỡ chữ banner theo đúng yêu cầu
+            fontSize: 'clamp(30px, 4.2vw, 48px)',
+            lineHeight: 1.18,
+          }}
+        >
           Đại Hội Đảng VI Năm 1986<br />
           Mở Ra Công Cuộc Đổi Mới
         </div>
@@ -406,8 +1114,13 @@ export default function DaiHoiVI() {
       </div>
 
       {/* 7. Large congress photo */}
-      <div className="img-center-wrap anim-fade-up">
-        <img className="hist-img congress" src="/images/nvl_khai_mac.jpg" alt="Đồng chí Nguyễn Văn Linh đọc diễn văn khai mạc Đại hội. Ảnh: TTXVN" />
+      <div className="img-center-wrap anim-fade-up" style={{ marginTop: 8 }}>
+        <img
+          className="hist-img congress"
+          src="/images/nvl_khai_mac.jpg"
+          alt="Đồng chí Nguyễn Văn Linh đọc diễn văn khai mạc Đại hội. Ảnh: TTXVN"
+          style={{ width: '82%', display: 'block', margin: '0 auto' }}
+        />
       </div>
 
       {/* Caption */}
