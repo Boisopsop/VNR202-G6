@@ -22,6 +22,9 @@ const figures = [
 // ── NHÂN VẬT Carousel (RED bg with muted Trống Đồng pattern) ─────────────────
 function PortraitCarousel() {
   const [idx, setIdx] = useState(0);
+  const prevIdxRef = useRef(idx);
+  const dirRef = useRef<1 | -1>(1);
+  const [swapKey, setSwapKey] = useState(0);
   const n = figures.length;
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -36,6 +39,13 @@ function PortraitCarousel() {
     timerRef.current = setInterval(() => setIdx(c => (c + 1) % n), 5000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [n]);
+
+  useEffect(() => {
+    if (idx === prevIdxRef.current) return;
+    dirRef.current = idx > prevIdxRef.current ? 1 : -1;
+    prevIdxRef.current = idx;
+    setSwapKey(k => k + 1);
+  }, [idx]);
 
   const prev = figures[(idx - 1 + n) % n];
   const curr = figures[idx];
@@ -97,26 +107,36 @@ function PortraitCarousel() {
 
           {/* Current – main, larger, with text */}
           <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-            <div style={{ borderRadius: 18, overflow: 'hidden', width: 260, height: 310,
-              boxShadow: '0 10px 32px rgba(0,0,0,0.6)', border: '3px solid rgba(255,255,255,0.7)' }}>
-              <img src={curr.img} alt={curr.name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'grayscale(100%)' }} />
-            </div>
             <div
-              style={{
-                color: '#FFFF00',
-                fontWeight: 700,
-                fontStyle: 'italic',
-                fontSize: 19,
-                textAlign: 'center',
-                maxWidth: 300,
-                textShadow: '0 2px 8px rgba(0,0,0,0.6)',
-                lineHeight: 1.35,
-              }}
+              key={swapKey}
+              className="portrait-current-swap"
+              style={{ ['--portrait-shift' as any]: `${dirRef.current * 10}px` }}
             >
-              Đồng chí {person}
-              {years ? <br /> : null}
-              {years ? years : null}
+              <div style={{ borderRadius: 18, overflow: 'hidden', width: 260, height: 310,
+                boxShadow: '0 10px 32px rgba(0,0,0,0.6)', border: '3px solid rgba(255,255,255,0.7)' }}>
+                <img
+                  src={curr.img}
+                  alt={curr.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'grayscale(100%)' }}
+                />
+              </div>
+
+              <div
+                style={{
+                  color: '#FFFF00',
+                  fontWeight: 700,
+                  fontStyle: 'italic',
+                  fontSize: 19,
+                  textAlign: 'center',
+                  maxWidth: 300,
+                  textShadow: '0 2px 8px rgba(0,0,0,0.6)',
+                  lineHeight: 1.35,
+                }}
+              >
+                Đồng chí {person}
+                {years ? <br /> : null}
+                {years ? years : null}
+              </div>
             </div>
             <div
               style={{

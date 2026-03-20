@@ -44,6 +44,29 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
   60%  { transform: scale(1.02); }
   100% { opacity: 1; transform: scale(1); }
 }
+
+/* ── Page transition (route change) ──────────────── */
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-transition {
+  animation: pageIn 0.35s ease-out both;
+}
+
+/* Portrait carousel swap animation (mượt hơn khi đổi nhân vật) */
+@keyframes portraitSwap {
+  from { opacity: 0; transform: translateX(var(--portrait-shift, 10px)) scale(0.98); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+.portrait-current-swap {
+  animation: portraitSwap 0.45s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portrait-current-swap { animation: none; }
+  .page-transition { animation: none; }
+}
 /* Default: hidden until .visible is added by IntersectionObserver */
 .anim-fade-up   { opacity: 0; transform: translateY(28px); transition: opacity 0.55s ease-out, transform 0.55s ease-out; }
 .anim-slide-left { opacity: 0; transform: translateX(-24px); transition: opacity 0.55s ease-out, transform 0.55s ease-out; }
