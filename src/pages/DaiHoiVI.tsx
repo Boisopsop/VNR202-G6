@@ -898,173 +898,107 @@ const doiMoiData = [
   },
 ];
 
-// ── Modal overlay for đổi mới detail ──────────────────────────────────────────
-function DoiMoiModal({ item, onClose }: { item: typeof doiMoiData[0]; onClose: () => void }) {
-  const measureRef = useRef<HTMLDivElement | null>(null);
-  const [scale, setScale] = useState(1);
-  const isEconomy = item.label === 'ĐỔI MỚI KINH TẾ';
+// ── Accordion expand/collapse cho Nội dung Đường lối Đổi mới ──────────────────
+function DoiMoiButtons() {
+  const [open, setOpen] = useState<number | null>(null);
+  const headerRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
-  useEffect(() => {
-    if (isEconomy) {
-      setScale(1);
-      return;
-    }
-
-    let rafId = 0;
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
-
-    const recalc = () => {
-      const el = measureRef.current;
-      if (!el) return;
-
-      const available = Math.max(window.innerHeight - 10, 1);
-      const rectHeight = el.getBoundingClientRect().height;
-      const scrollHeight = el.scrollHeight;
-      const contentHeight = Math.max(rectHeight, scrollHeight, 1);
-
-      // Keep legacy behavior but avoid tiny/invalid scale on some devices.
-      const raw = available / contentHeight;
-      const next = Math.min(1, Math.max(0.72, Number.isFinite(raw) ? raw : 1));
-      setScale(next);
-    };
-
-    const scheduleRecalc = () => {
-      cancelAnimationFrame(rafId);
-      if (timeoutId) clearTimeout(timeoutId);
-      rafId = requestAnimationFrame(recalc);
-      // Run once more after layout settles (fonts/images may load late on other machines)
-      timeoutId = setTimeout(recalc, 120);
-    };
-
-    scheduleRecalc();
-    window.addEventListener('resize', scheduleRecalc);
-    return () => {
-      cancelAnimationFrame(rafId);
-      if (timeoutId) clearTimeout(timeoutId);
-      window.removeEventListener('resize', scheduleRecalc);
-    };
-  }, [item.label, isEconomy]);
-
-  useEffect(() => {
-    // Lock background scrolling/interactions while modal is open.
-    const prevOverflow = document.body.style.overflow;
-    const prevTouchAction = document.body.style.touchAction;
-    document.body.style.overflow = 'hidden';
-    document.body.style.touchAction = 'none';
-
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      document.body.style.touchAction = prevTouchAction;
-    };
-  }, []);
+  const toggle = (i: number) => {
+    setOpen((prev) => {
+      const next = prev === i ? null : i;
+      if (next !== null) {
+        const scrollToHeader = () => {
+          headerRefs.current[next]?.scrollIntoView({
+            block: 'start',
+            inline: 'nearest',
+            behavior: 'auto',
+          });
+        };
+        requestAnimationFrame(scrollToHeader);
+        // Run once more after expand starts to prevent scroll anchoring drift.
+        setTimeout(scrollToHeader, 120);
+      }
+      return next;
+    });
+  };
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.42)',
-        zIndex: 1000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 0,
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          width: '100%',
-          maxWidth: 1242,
-          height: '100vh',
-          position: 'relative',
-          animation: 'fadeInUp 0.3s ease-out both',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: isEconomy ? 'translate(-50%, -50%)' : `translate(-50%, -50%) scale(${scale})`,
-            transformOrigin: 'center center',
-            width: '100%',
-          }}
-        >
-          <div
-            ref={measureRef}
-            style={{
-              position: 'relative',
-              width: '100%',
-              height: isEconomy ? 'calc(100vh - 30px)' : undefined,
-              maxHeight: isEconomy ? 'calc(100vh - 30px)' : undefined,
-              overflow: 'hidden',
-              overflowX: 'hidden',
-            }}
-          >
+    <div style={{
+      maxWidth: 'var(--content-max)',
+      margin: '16px auto 0',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 0,
+    }}>
+      {doiMoiData.map((item, i) => {
+        const isOpen = open === i;
+        return (
+          <div key={i} style={{ width: '100%' }}>
+            {/* ── Nút tiêu đề ── */}
             <button
-              onClick={onClose}
+              ref={(el) => {
+                headerRefs.current[i] = el;
+              }}
+              onClick={() => toggle(i)}
               style={{
-                position: 'absolute',
-                top: 20,
-                right: 20,
-                background: '#D71920',
+                width: '100%',
+                minHeight: 80,
+                background: isOpen ? '#D71920' : 'var(--yellow-light)',
+                borderRadius: isOpen ? '42px 42px 0 0' : 42,
                 border: 'none',
-                cursor: 'pointer',
-                color: '#fff',
-                width: 38,
-                height: 38,
-                borderRadius: '50%',
-                fontSize: 18,
                 fontWeight: 700,
+                fontSize: 26,
+                textAlign: 'center',
+                cursor: 'pointer',
+                boxShadow: isOpen ? 'none' : 'var(--shadow)',
+                transition: 'background 0.25s, border-radius 0.25s, box-shadow 0.25s',
+                color: isOpen ? '#FFFF00' : '#111',
+                padding: '24px 52px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
-                zIndex: 2,
+                gap: 16,
+                marginTop: i === 0 ? 0 : (open === i - 1 ? 0 : 18),
               }}
             >
-              ✕
+              {/* Mũi tên chỉ hướng */}
+              <span style={{
+                display: 'inline-block',
+                transition: 'transform 0.3s cubic-bezier(.4,0,.2,1)',
+                transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                fontSize: 20,
+                lineHeight: 1,
+                flexShrink: 0,
+              }}>
+                ▼
+              </span>
+              {item.label}
             </button>
-            <item.Content />
+
+            {/* ── Nội dung accordion ── */}
+            <div style={{
+              overflow: 'hidden',
+              overflowAnchor: 'none',
+              maxHeight: isOpen ? '9999px' : '0px',
+              transition: isOpen
+                ? 'max-height 0.55s cubic-bezier(0.4, 0, 0.2, 1)'
+                : 'max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+              borderRadius: '0 0 42px 42px',
+              boxShadow: isOpen ? 'var(--shadow)' : 'none',
+              marginBottom: isOpen ? 18 : 0,
+            }}>
+              <div style={{
+                opacity: isOpen ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+                transitionDelay: isOpen ? '0.15s' : '0s',
+              }}>
+                <item.Content />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        );
+      })}
     </div>
-  );
-}
-
-function DoiMoiButtons() {
-  const [open, setOpen] = useState<number | null>(null);
-  const active = open !== null ? doiMoiData[open] : null;
-
-  return (
-    <>
-      {/* 4 tall yellow buttons – centered, matching Figma proportions */}
-      <div style={{ maxWidth: 'var(--content-max)', margin: '16px auto 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18 }}>
-        {doiMoiData.map((item, i) => (
-          <button
-            key={i}
-            onClick={() => setOpen(i)}
-            style={{
-              width: '72%', minHeight: 80, background: 'var(--yellow-light)',
-              borderRadius: 42, border: 'none',
-              fontWeight: 700, fontSize: 26, textAlign: 'center', cursor: 'pointer',
-              boxShadow: 'var(--shadow)', transition: 'all 0.22s', color: '#111',
-              padding: '24px 36px',
-            }}
-            onMouseOver={e => { e.currentTarget.style.background = '#eff87a'; e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.22)'; }}
-            onMouseOut={e => { e.currentTarget.style.background = 'var(--yellow-light)'; e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'var(--shadow)'; }}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-      {/* Modal overlay */}
-      {active && <DoiMoiModal item={active} onClose={() => setOpen(null)} />}
-    </>
   );
 }
 
