@@ -272,7 +272,7 @@ function DoiMoiOuterCard({
   title,
   children,
 }: {
-  title: string;
+  title?: string;
   children: ReactNode;
 }) {
   return (
@@ -287,21 +287,23 @@ function DoiMoiOuterCard({
         fontFamily: 'Be Vietnam Pro, sans-serif',
       }}
     >
-      <div
-        style={{
-          width: 359,
-          maxWidth: '100%',
-          margin: '0 auto 28px',
-          fontWeight: 700,
-          fontSize: 36,
-          lineHeight: '46px',
-          textAlign: 'center',
-          color: '#D71920',
-          textTransform: 'uppercase',
-        }}
-      >
-        {title}
-      </div>
+      {title ? (
+        <div
+          style={{
+            width: 359,
+            maxWidth: '100%',
+            margin: '0 auto 28px',
+            fontWeight: 700,
+            fontSize: 36,
+            lineHeight: '46px',
+            textAlign: 'center',
+            color: '#D71920',
+            textTransform: 'uppercase',
+          }}
+        >
+          {title}
+        </div>
+      ) : null}
       {children}
     </div>
   );
@@ -329,7 +331,7 @@ function DoiMoiRedCard({
 // 1) ĐỔI MỚI TƯ DUY (hiển thị như hình 1 + ảnh hình 2)
 function DoiMoiTuDuyContent() {
   return (
-    <DoiMoiOuterCard title="ĐỔI MỚI TƯ DUY">
+    <DoiMoiOuterCard>
       <div style={{ fontSize: 24, lineHeight: '30px', fontWeight: 400, color: '#000' }}>
         <p style={{ margin: 0 }}>
           Đại hội VI nhấn mạnh đổi mới tư duy lãnh đạo và quản lý, với tinh thần:
@@ -486,22 +488,6 @@ function DoiMoiKinhTeContent() {
         minHeight: 0, // allow scroll child to size correctly
       }}
     >
-      <div
-        style={{
-          width: 359,
-          maxWidth: '100%',
-          margin: '0 auto 18px',
-          fontWeight: 700,
-          fontSize: 36,
-          lineHeight: '46px',
-          textAlign: 'center',
-          color: '#D71920',
-          textTransform: 'uppercase',
-        }}
-      >
-        ĐỔI MỚI KINH TẾ
-      </div>
-
       <div className="doi-moi-scroll">
         {/* Top: 2 cơ chế vàng + mũi tên */}
         <div style={{ marginTop: 0 }}>
@@ -662,7 +648,7 @@ function DoiMoiKinhTeContent() {
 // 3) ĐỔI MỚI XÃ HỘI (hiển thị như hình 5 + ảnh hình 6)
 function DoiMoiXaHoiContent() {
   return (
-    <DoiMoiOuterCard title="ĐỔI MỚI XÃ HỘI">
+    <DoiMoiOuterCard>
       <div style={{ fontSize: 24, lineHeight: '30px', fontWeight: 400, color: '#000' }}>
         Tại Đại hội VI của Đảng Cộng sản Việt Nam, đổi mới không chỉ giới hạn ở kinh tế mà còn hướng tới cải thiện đời sống xã hội và phát huy vai trò của con người. Đại hội nhấn mạnh phát triển kinh tế phải gắn với giải quyết việc làm, nâng cao đời sống nhân dân và phát triển giáo dục, văn hóa, y tế.
       </div>
@@ -772,7 +758,7 @@ function DoiMoiXaHoiContent() {
 // 4) ĐỔI MỚI ĐỐI NGOẠI (hiển thị như hình 7 + ảnh hình 8)
 function DoiMoiDoiNgoaiContent() {
   return (
-    <DoiMoiOuterCard title="ĐỔI MỚI ĐỐI NGOẠI">
+    <DoiMoiOuterCard>
       <div style={{ fontSize: 24, lineHeight: '30px', fontWeight: 400, color: '#000' }}>
         Đại hội VI cũng đề ra chủ trương đổi mới tư duy đối ngoại, mở rộng quan hệ hợp tác quốc tế và kết hợp sức mạnh dân tộc với sức mạnh của thời đại. Điều này đánh dấu sự chuyển biến từ tư duy đối ngoại khép kín sang mở cửa và hội nhập quốc tế.
       </div>
@@ -1245,7 +1231,7 @@ export default function DaiHoiVI() {
       <HorizontalLessons />
 
       {/* 12. NỘI DUNG ĐƯỜNG LỐI ĐỔI MỚI – standalone heading */}
-      <div className="section-standalone-heading anim-fade-up" style={{ textAlign: 'center' }}>
+      <div className="section-standalone-heading anim-fade-up" style={{ textAlign: 'center', marginTop: 52 }}>
         NỘI DUNG ĐƯỜNG LỐI ĐỔI MỚI
       </div>
       <DoiMoiButtons />
