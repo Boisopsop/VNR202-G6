@@ -882,19 +882,19 @@ function DoiMoiDoiNgoaiContent() {
 const doiMoiData = [
   {
     label: 'ĐỔI MỚI TƯ DUY',
-    content: <DoiMoiTuDuyContent />,
+    Content: DoiMoiTuDuyContent,
   },
   {
     label: 'ĐỔI MỚI KINH TẾ',
-    content: <DoiMoiKinhTeContent />,
+    Content: DoiMoiKinhTeContent,
   },
   {
     label: 'ĐỔI MỚI XÃ HỘI',
-    content: <DoiMoiXaHoiContent />,
+    Content: DoiMoiXaHoiContent,
   },
   {
     label: 'ĐỔI MỚI ĐỐI NGOẠI',
-    content: <DoiMoiDoiNgoaiContent />,
+    Content: DoiMoiDoiNgoaiContent,
   },
 ];
 
@@ -902,29 +902,47 @@ const doiMoiData = [
 function DoiMoiModal({ item, onClose }: { item: typeof doiMoiData[0]; onClose: () => void }) {
   const measureRef = useRef<HTMLDivElement | null>(null);
   const [scale, setScale] = useState(1);
-
   const isEconomy = item.label === 'ĐỔI MỚI KINH TẾ';
 
   useEffect(() => {
     if (isEconomy) {
-      // Economy: giữ khung cố định, không scale (nội dung sẽ cuộn bên trong).
       setScale(1);
       return;
     }
+
+    let rafId = 0;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
     const recalc = () => {
       const el = measureRef.current;
       if (!el) return;
 
-      const available = window.innerHeight - 6;
-      const contentHeight = el.scrollHeight || el.getBoundingClientRect().height || 1;
-      const next = Math.min(1, available / contentHeight);
-      setScale(Number.isFinite(next) ? next : 1);
+      const available = Math.max(window.innerHeight - 10, 1);
+      const rectHeight = el.getBoundingClientRect().height;
+      const scrollHeight = el.scrollHeight;
+      const contentHeight = Math.max(rectHeight, scrollHeight, 1);
+
+      // Keep legacy behavior but avoid tiny/invalid scale on some devices.
+      const raw = available / contentHeight;
+      const next = Math.min(1, Math.max(0.72, Number.isFinite(raw) ? raw : 1));
+      setScale(next);
     };
 
-    recalc();
-    window.addEventListener('resize', recalc);
-    return () => window.removeEventListener('resize', recalc);
+    const scheduleRecalc = () => {
+      cancelAnimationFrame(rafId);
+      if (timeoutId) clearTimeout(timeoutId);
+      rafId = requestAnimationFrame(recalc);
+      // Run once more after layout settles (fonts/images may load late on other machines)
+      timeoutId = setTimeout(recalc, 120);
+    };
+
+    scheduleRecalc();
+    window.addEventListener('resize', scheduleRecalc);
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (timeoutId) clearTimeout(timeoutId);
+      window.removeEventListener('resize', scheduleRecalc);
+    };
   }, [item.label, isEconomy]);
 
   useEffect(() => {
@@ -965,7 +983,6 @@ function DoiMoiModal({ item, onClose }: { item: typeof doiMoiData[0]; onClose: (
           animation: 'fadeInUp 0.3s ease-out both',
         }}
       >
-        {/* Scale + center so top/bottom whitespace stays balanced */}
         <div
           style={{
             position: 'absolute',
@@ -1011,7 +1028,7 @@ function DoiMoiModal({ item, onClose }: { item: typeof doiMoiData[0]; onClose: (
             >
               ✕
             </button>
-            {item.content}
+            <item.Content />
           </div>
         </div>
       </div>
@@ -1138,12 +1155,57 @@ export default function DaiHoiVI() {
         TINH THẦN ĐỔI MỚI CỦA ĐẠI HỘI
       </div>
 
+      {/* 6.5 Yellow quote strip (restore by request) */}
+      <div
+        className="anim-fade-up"
+        style={{
+          maxWidth: 'var(--content-max)',
+          margin: '24px auto 0',
+          background: '#E9EE72',
+          borderRadius: 36,
+          boxShadow: 'var(--shadow)',
+          padding: '22px 34px 18px',
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 8,
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            color: 'var(--red)',
+            fontWeight: 800,
+            fontSize: 'clamp(20px, 2.05vw, 30px)',
+            lineHeight: 1.12,
+            textTransform: 'uppercase',
+            letterSpacing: '0.05px',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          “NHÌN THẲNG VÀO SỰ THẬT, ĐÁNH GIÁ ĐÚNG SỰ THẬT, NÓI RÕ SỰ THẬT.”
+        </p>
+        <p
+          style={{
+            margin: 0,
+            color: '#111',
+            fontStyle: 'italic',
+            fontSize: 'clamp(13px, 1.08vw, 18px)',
+            lineHeight: 1.2,
+          }}
+        >
+          (Đồng chí Trường Chinh - Tổng bí thư)
+        </p>
+      </div>
+
       {/* 7. Two congress photos + captions (match Figma layout) */}
       <div
         className="anim-fade-up"
         style={{
           maxWidth: 1180,
-          margin: '8px auto 0',
+          margin: '44px auto 0',
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: 12,
