@@ -31,11 +31,11 @@ export default function BienDong() {
       </div>
 
       {/* 2. Two side-by-side photos */}
-      <div className="anim-fade-up" style={{
+      <div style={{
         maxWidth: 'var(--content-max)', margin: '24px auto 0',
         display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16,
       }}>
-        <div>
+        <div className="anim-slide-left">
           <img src="/images/lienxo_1.jpg" alt="Người dân Litva biểu tình" style={{
             width: '100%', height: 340, objectFit: 'cover',
             borderRadius: 16, display: 'block', boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
@@ -50,7 +50,7 @@ export default function BienDong() {
             Người dân Litva (nước thành viên của Liên Xô) tụ tập ở thủ đô Vilnius vào ngày 12-1-1990 để đòi tách khỏi Liên Xô. Litva là nước cộng hòa Xô viết đầu tiên tuyên bố độc lập. Ảnh: Getty. (Báo điện tử Quân đội nhân dân)
           </a>
         </div>
-        <div>
+        <div className="anim-slide-right">
           <img src="/images/lienxo_2.jpg" alt="Gorbachev tại Vilnius" style={{
             width: '100%', height: 340, objectFit: 'cover',
             borderRadius: 16, display: 'block', boxShadow: '0 4px 16px rgba(0,0,0,0.2)',

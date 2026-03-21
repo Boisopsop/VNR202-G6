@@ -478,7 +478,7 @@ export default function ThanhTuu() {
             gap: 52,
             marginBottom: 32,
             alignItems: 'center',
-          }}>
+          }} className={`anim-fade-up stagger-${Math.min(ri + 1, 6)}`}>
             {row.map((item, ci) => (
               /* ci=0 → left col: pad right away from center line; ci=1 → right col: pad left away from center line */
               <div key={ci} style={{ paddingRight: ci === 0 ? 20 : 0, paddingLeft: ci === 1 ? 20 : 0 }}>

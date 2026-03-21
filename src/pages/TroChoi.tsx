@@ -15,6 +15,7 @@ export default function TroChoi() {
         {/* Video 1 (full screen section) */}
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
           <h2
+            className="anim-fade-up"
             style={{
               fontFamily: 'Be Vietnam Pro, sans-serif',
               fontSize: 'clamp(22px, 2.6vw, 36px)',
@@ -29,7 +30,7 @@ export default function TroChoi() {
           >
             (Tóm gọn) Việt Nam trước và sau Đổi mới 1986
           </h2>
-          <div style={{ width: '100%', maxWidth: 980, margin: '0 auto', padding: '0 16px' }}>
+          <div className="anim-pop stagger-1" style={{ width: '100%', maxWidth: 980, margin: '0 auto', padding: '0 16px' }}>
             <iframe
               src="https://www.youtube.com/embed/CZEofJXLTaQ"
               title="(Tóm gọn) Việt Nam trước và sau Đổi mới 1986"
@@ -50,6 +51,7 @@ export default function TroChoi() {
         {/* Video 3 */}
         <div style={{ padding: '22px 16px 0' }}>
           <h2
+            className="anim-fade-up"
             style={{
               fontFamily: 'Be Vietnam Pro, sans-serif',
               fontSize: 'clamp(18px, 2.1vw, 26px)',
@@ -63,7 +65,7 @@ export default function TroChoi() {
           >
             Ngày này năm xưa: Đại hội Đảng lần thứ VI: Quyết tâm đổi mới
           </h2>
-          <div style={{ width: '100%', maxWidth: 980, margin: '0 auto' }}>
+          <div className="anim-pop stagger-1" style={{ width: '100%', maxWidth: 980, margin: '0 auto' }}>
             <iframe
               src="https://www.youtube.com/embed/enZg2jqhukc"
               title="Ngày này năm xưa: Đại hội Đảng lần thứ VI: Quyết tâm đổi mới"
@@ -84,6 +86,7 @@ export default function TroChoi() {
         {/* Video 4 */}
         <div style={{ padding: '40px 16px 40px' }}>
           <h2
+            className="anim-fade-up"
             style={{
               fontFamily: 'Be Vietnam Pro, sans-serif',
               fontSize: 'clamp(18px, 2.1vw, 26px)',
@@ -99,7 +102,7 @@ export default function TroChoi() {
             <br />
             Mở ra thời kỳ đổi mới đất nước
           </h2>
-          <div style={{ width: '100%', maxWidth: 980, margin: '0 auto' }}>
+          <div className="anim-pop stagger-1" style={{ width: '100%', maxWidth: 980, margin: '0 auto' }}>
             <iframe
               src="https://www.youtube.com/embed/xFHawdU99KQ"
               title="Đại hội Đại biểu toàn quốc lần thứ VI của Đảng - Mở ra thời kỳ đổi mới đất nước"

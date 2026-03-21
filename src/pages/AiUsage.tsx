@@ -96,15 +96,15 @@ export default function AiUsage() {
       </div>
 
       {/* 3 AI tool cards */}
-      <div className="anim-fade-up" style={{
+      <div style={{
         maxWidth: 'var(--content-max)',
         margin: '28px auto 0',
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
         gap: 24,
       }}>
-        {tools.map(({ logo, name, purpose, edit }) => (
-          <div key={name} style={{
+        {tools.map(({ logo, name, purpose, edit }, i) => (
+          <div key={name} className={`anim-pop stagger-${i + 1}`} style={{
             background: '#FFF3F3',
             borderRadius: 32,
             padding: '28px 26px 28px',

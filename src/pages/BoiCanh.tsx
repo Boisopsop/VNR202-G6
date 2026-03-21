@@ -213,7 +213,7 @@ export default function BoiCanh() {
         style={{ maxWidth: 'var(--content-max)', margin: '20px auto 0', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}
       >
         {[1,2,3,4,5,6].map(n => (
-          <img key={n} className="hist-img grid-photo" src={`/images/tem_phieu_${n}.jpg`} alt="Ảnh tư liệu tem phiếu" />
+          <img key={n} className={`hist-img grid-photo anim-fade-up stagger-${Math.min(n, 6)}`} src={`/images/tem_phieu_${n}.jpg`} alt="Ảnh tư liệu tem phiếu" />
         ))}
       </div>
       <a

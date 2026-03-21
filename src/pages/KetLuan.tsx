@@ -41,7 +41,7 @@ export default function KetLuan() {
       </div>
 
       {/* 3. Two side-by-side photos */}
-      <div className="anim-fade-up" style={{
+      <div style={{
         maxWidth: 'var(--content-max)',
         margin: '36px auto 0',
         display: 'grid',
@@ -49,11 +49,13 @@ export default function KetLuan() {
         gap: 16,
       }}>
         <img
+          className="anim-slide-left"
           src="/images/ketluan_co_dang.jpg"
           alt="Cờ Đảng và cờ Tổ quốc – Việt Nam phát triển sau Đổi mới"
           style={{ width: '100%', height: 380, objectFit: 'cover', borderRadius: 12, boxShadow: 'var(--shadow)', display: 'block' }}
         />
         <img
+          className="anim-slide-right"
           src="/images/ketluan_ngoai_giao.jpg"
           alt="Việt Nam hội nhập và mở rộng quan hệ quốc tế"
           style={{ width: '100%', height: 380, objectFit: 'cover', borderRadius: 12, boxShadow: 'var(--shadow)', display: 'block' }}

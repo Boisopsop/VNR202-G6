@@ -33,31 +33,43 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
 
 /* ── Animations ──────────────────────────────────── */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(28px); }
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-24px); }
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(32px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 @keyframes popIn {
-  0%   { opacity: 0; transform: scale(0.92); }
-  60%  { transform: scale(1.02); }
+  0%   { opacity: 0; transform: scale(0.90); }
+  65%  { transform: scale(1.03); }
   100% { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
 }
 
 /* ── Page transition (route change) ──────────────── */
 @keyframes pageIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .page-transition {
-  animation: pageIn 0.45s cubic-bezier(.22,.61,.36,1) both;
+  animation: pageIn 0.5s cubic-bezier(.22,.61,.36,1) both;
 }
 
-/* Portrait carousel swap animation (mượt hơn khi đổi nhân vật) */
+/* Portrait carousel swap animation */
 @keyframes portraitSwap {
-  from { opacity: 0; transform: translateX(var(--portrait-shift, 10px)) scale(0.98); }
+  from { opacity: 0; transform: translateX(var(--portrait-shift, 10px)) scale(0.97); }
   to   { opacity: 1; transform: translateX(0) scale(1); }
 }
 .portrait-current-swap {
@@ -69,7 +81,9 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
   .page-transition { animation: none; }
   .section-banner::before { animation: none; }
   .anim-fade-up,
+  .anim-fade-down,
   .anim-slide-left,
+  .anim-slide-right,
   .anim-pop,
   .info-card,
   .leader-card,
@@ -77,38 +91,60 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
   .red-block,
   a {
     transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
-/* Default: hidden until .visible is added by IntersectionObserver */
-.anim-fade-up   { opacity: 0; transform: translateY(28px); transition: opacity 0.55s ease-out, transform 0.55s ease-out; }
-.anim-slide-left { opacity: 0; transform: translateX(-24px); transition: opacity 0.55s ease-out, transform 0.55s ease-out; }
-.anim-pop       { opacity: 0; transform: scale(0.93); transition: opacity 0.45s ease-out, transform 0.45s ease-out; }
+
+/* ── Scroll-reveal: hidden until .visible added by IntersectionObserver ── */
+.anim-fade-up    { opacity: 0; transform: translateY(36px);  transition: opacity 0.65s cubic-bezier(.22,.61,.36,1), transform 0.65s cubic-bezier(.22,.61,.36,1); }
+.anim-fade-down  { opacity: 0; transform: translateY(-20px); transition: opacity 0.6s cubic-bezier(.22,.61,.36,1),  transform 0.6s cubic-bezier(.22,.61,.36,1);  }
+.anim-slide-left { opacity: 0; transform: translateX(-36px); transition: opacity 0.6s cubic-bezier(.22,.61,.36,1),  transform 0.6s cubic-bezier(.22,.61,.36,1);  }
+.anim-slide-right{ opacity: 0; transform: translateX(36px);  transition: opacity 0.6s cubic-bezier(.22,.61,.36,1),  transform 0.6s cubic-bezier(.22,.61,.36,1);  }
+.anim-pop        { opacity: 0; transform: scale(0.90);       transition: opacity 0.5s cubic-bezier(.22,.61,.36,1),  transform 0.5s cubic-bezier(.34,1.4,.64,1);  }
+
 .anim-fade-up,
+.anim-fade-down,
 .anim-slide-left,
+.anim-slide-right,
 .anim-pop { will-change: transform, opacity; }
 
-.anim-fade-up.visible   { opacity: 1; transform: translateY(0); }
+.anim-fade-up.visible    { opacity: 1; transform: translateY(0); }
+.anim-fade-down.visible  { opacity: 1; transform: translateY(0); }
 .anim-slide-left.visible { opacity: 1; transform: translateX(0); }
-.anim-pop.visible       { opacity: 1; transform: scale(1); }
-.anim-fade-up.visible:nth-of-type(2) { transition-delay: 0.04s; }
-.anim-fade-up.visible:nth-of-type(3) { transition-delay: 0.08s; }
-.anim-fade-up.visible:nth-of-type(4) { transition-delay: 0.12s; }
+.anim-slide-right.visible{ opacity: 1; transform: translateX(0); }
+.anim-pop.visible        { opacity: 1; transform: scale(1); }
 
-/* Explicit stagger (use with IntersectionObserver + .visible) */
-.anim-fade-up.stagger-1.visible { transition-delay: 0.05s; }
-.anim-fade-up.stagger-2.visible { transition-delay: 0.1s; }
-.anim-fade-up.stagger-3.visible { transition-delay: 0.15s; }
-.anim-fade-up.stagger-4.visible { transition-delay: 0.2s; }
-.anim-fade-up.stagger-5.visible { transition-delay: 0.25s; }
-.anim-fade-up.stagger-6.visible { transition-delay: 0.3s; }
-.anim-fade-up.stagger-7.visible { transition-delay: 0.35s; }
-.anim-fade-up.stagger-8.visible { transition-delay: 0.4s; }
+/* ── Stagger delays (explicit, dùng class stagger-N) ── */
+.anim-fade-up.stagger-1.visible,
+.anim-slide-left.stagger-1.visible,
+.anim-pop.stagger-1.visible { transition-delay: 0.07s; }
 
-/* Stagger delays */
-.delay-1 { animation-delay: 0.05s; }
-.delay-2 { animation-delay: 0.12s; }
-.delay-3 { animation-delay: 0.20s; }
-.delay-4 { animation-delay: 0.28s; }
+.anim-fade-up.stagger-2.visible,
+.anim-slide-left.stagger-2.visible,
+.anim-pop.stagger-2.visible { transition-delay: 0.14s; }
+
+.anim-fade-up.stagger-3.visible,
+.anim-slide-left.stagger-3.visible,
+.anim-pop.stagger-3.visible { transition-delay: 0.21s; }
+
+.anim-fade-up.stagger-4.visible,
+.anim-slide-left.stagger-4.visible,
+.anim-pop.stagger-4.visible { transition-delay: 0.28s; }
+
+.anim-fade-up.stagger-5.visible,
+.anim-slide-left.stagger-5.visible,
+.anim-pop.stagger-5.visible { transition-delay: 0.35s; }
+
+.anim-fade-up.stagger-6.visible { transition-delay: 0.42s; }
+.anim-fade-up.stagger-7.visible { transition-delay: 0.49s; }
+.anim-fade-up.stagger-8.visible { transition-delay: 0.56s; }
+
+/* ── Legacy delay helpers ── */
+.delay-1 { animation-delay: 0.06s; }
+.delay-2 { animation-delay: 0.14s; }
+.delay-3 { animation-delay: 0.22s; }
+.delay-4 { animation-delay: 0.30s; }
 
 /* ── Images ──────────────────────────────────────── */
 .hist-img { width: 100%; display: block; object-fit: cover; box-shadow: var(--shadow); border-radius: 4px; transition: transform var(--transition), box-shadow var(--transition); }
@@ -372,6 +408,51 @@ a:hover {
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: content-box;
+}
+
+/* ── Card hover lift (tất cả card có anim-fade-up) ── */
+.anim-fade-up.visible:not(.section-banner):not(.section-standalone-heading) {
+  transition:
+    opacity 0.65s cubic-bezier(.22,.61,.36,1),
+    transform 0.65s cubic-bezier(.22,.61,.36,1),
+    box-shadow 0.3s ease;
+}
+
+/* ── Divider giữa section (thay cho margin thô) ─── */
+.section-divider {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(215,25,32,0.18), transparent);
+}
+
+/* ── Scroll padding để nội dung không bị nav che ── */
+html {
+  scroll-padding-top: 70px;
+}
+
+/* ── Section spacing chuẩn ─────────────────────── */
+.section-gap { margin-top: 40px; }
+.section-gap-sm { margin-top: 24px; }
+.section-gap-lg { margin-top: 56px; }
+
+/* ── Info card: thêm hover effect nhẹ ─────────── */
+.info-card {
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.info-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* ── Red block hover ─────────────────────────────── */
+.red-block:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+
+/* ── Smooth image load (prevent layout shift) ───── */
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 /* ── Responsive ──────────────────────────────────── */
