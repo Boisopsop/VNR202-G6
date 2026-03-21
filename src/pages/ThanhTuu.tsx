@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 /* ─── Types ─────────────────────────────────────────── */
+type InlineLink = { label: string; href: string };
 interface CarouselSlide {
   title: string;
   bodyLines: string[];
@@ -8,6 +9,112 @@ interface CarouselSlide {
   imageSrc?: string;
   imageAlt?: string;
 }
+
+const mutedUnderlineLinkStyle: React.CSSProperties = {
+  color: 'inherit',
+  textDecorationLine: 'underline',
+  textDecorationColor: 'rgba(0,0,0,0.35)',
+  textDecorationThickness: '1px',
+  textUnderlineOffset: '3px',
+};
+
+function renderLinkedText(text: string, links: InlineLink[]) {
+  if (!links.length) return text;
+
+  const nodes: React.ReactNode[] = [];
+  let cursor = 0;
+
+  while (cursor < text.length) {
+    let nextMatch: { index: number; link: InlineLink } | null = null;
+
+    for (const link of links) {
+      const i = text.indexOf(link.label, cursor);
+      if (i === -1) continue;
+      if (!nextMatch || i < nextMatch.index) nextMatch = { index: i, link };
+    }
+
+    if (!nextMatch) {
+      nodes.push(text.slice(cursor));
+      break;
+    }
+
+    if (nextMatch.index > cursor) nodes.push(text.slice(cursor, nextMatch.index));
+
+    nodes.push(
+      <a
+        key={`${nextMatch.index}-${nextMatch.link.label}`}
+        href={nextMatch.link.href}
+        target="_blank"
+        rel="noreferrer"
+        style={mutedUnderlineLinkStyle}
+      >
+        {nextMatch.link.label}
+      </a>,
+    );
+    cursor = nextMatch.index + nextMatch.link.label.length;
+  }
+
+  return nodes;
+}
+
+const sourceLinkMap: Record<string, InlineLink[]> = {
+  'Nguồn: Bộ Nông nghiệp và Phát triển nông thôn, Trung tâm WTO (VCCI), Tạp chí Cộng sản.': [
+    { label: 'Bộ Nông nghiệp và Phát triển nông thôn', href: 'https://www.youtube.com/watch?v=jZ-BjWO3hHk' },
+    { label: 'Trung tâm WTO (VCCI)', href: 'https://trungtamwto.vn/hiep-dinh-khac/28481-xuat-khau-gao-nam-2024-dat-ky-luc-ca-ve-luong-va-gia-tri' },
+    { label: 'Tạp chí Cộng sản.', href: 'https://www.tapchicongsan.org.vn/nghien-cu/-/2018/2735/vi-the-viet-nam-trong-bao-dam-an-ninh-luong-thuc-the-gioi.aspx' },
+  ],
+  'Nguồn: Tổng cục Thống kê (GSO), Báo Đầu tư, Infographics: T.L – Nguồn: TTXVN.': [
+    { label: 'Tổng cục Thống kê (GSO)', href: 'https://www.nso.gov.vn/du-lieu-va-so-lieu-thong-ke/2025/01/thong-cao-bao-chi-tinh-hinh-kinh-te-xa-hoi-quy-iv-va-nam-2024/' },
+    { label: 'Báo Đầu tư', href: 'https://baodautu.vn/quy-mo-gdp-viet-nam-som-can-moc-1000-ty-usd-d471397.html' },
+    { label: 'Infographics: T.L – Nguồn: TTXVN.', href: 'https://thoibaotaichinhvietnam.vn/kinh-te-viet-nam-se-tang-truong-vuot-bac-trong-5-nam-toi-52083.html' },
+  ],
+  'Nguồn: Cổng thông tin điện tử Chính phủ, Tổng cục Thống kê.': [
+    { label: 'Cổng thông tin điện tử Chính phủ', href: 'https://baochinhphu.vn/gdp-nam-2020-tang-291-102285021.htm' },
+    { label: 'Tổng cục Thống kê.', href: 'https://www.nso.gov.vn/du-lieu-va-so-lieu-thong-ke/2025/01/thong-cao-bao-chi-ket-qua-bien-soan-chi-tieu-ty-trong-gia-tri-tang-them-cua-kinh-te-so-trong-gdp-grdp-giai-doan-2020-2024/' },
+  ],
+  'Nguồn: Báo Chính phủ, Tạp chí VietnamFinance, CafeF.': [
+    { label: 'Báo Chính phủ', href: 'https://baochinhphu.vn/samsung-se-dau-tu-them-1-ty-usd-moi-nam-tai-viet-nam-102240509183855562.htm' },
+    { label: 'Tạp chí VietnamFinance', href: 'https://vietnamfinance.vn/samsung-dau-tu-232-ty-usd-vao-viet-nam-da-san-xuat-2-ty-dien-thoai-d131610.html' },
+    { label: 'CafeF', href: 'https://cafef.vn/6-nha-may-loi-cua-samsung-tai-viet-nam-dat-doanh-thu-65-ty-usd-nam-2025-188260306100014413.chn' },
+  ],
+  'Nguồn: Báo điện tử Nhân Dân, Ngân hàng Thế giới (World Bank), CafeBiz.': [
+    { label: 'Báo điện tử Nhân Dân', href: 'https://nhandan.vn/ty-le-ho-ngheo-ca-nuoc-con-193-post837061.html' },
+    { label: 'CafeBiz', href: 'https://cafebiz.vn/quy-mo-gdp-viet-nam-duoc-du-bao-se-vuot-moc-1000-ty-usd-sau-10-nam-nua-vay-gdp-binh-quan-dau-nguoi-thi-sao-176260122110733437.chn' },
+  ],
+  'Nguồn: Chương trình Phát triển Liên Hợp Quốc (UNDP), Báo Lao Động.': [
+    { label: 'Chương trình Phát triển Liên Hợp Quốc (UNDP)', href: 'https://www.undp.org/vi/vietnam/press-releases/theo-bao-cao-moi-nhat-cua-undp-viet-nam-nam-trong-nhom-phat-trien-con-nguoi-cao' },
+    { label: 'Báo Lao Động', href: 'https://laodong.vn/thoi-su/viet-nam-thuoc-nhom-quoc-gia-dat-muc-cao-trong-bao-cao-phat-trien-con-nguoi-2025-1505805.ldo' },
+  ],
+  'Nguồn: Tổng công ty Cảng hàng không Việt Nam (ACV), Báo điện tử Chính phủ, VTC News.': [
+    { label: 'Tổng công ty Cảng hàng không Việt Nam (ACV)', href: 'https://cafef.vn/mo-ho-so-acv-dinh-lum-xum-goi-thau-lon-nhat-du-an-san-bay-long-thanh-188260306140334792.chn' },
+    { label: 'Báo điện tử Chính phủ', href: 'https://doanhnhansaigon.vn/chinh-phu-ra-chi-dao-moi-ve-tien-do-du-an-san-bay-long-thanh-332474.html' },
+    { label: 'VTC News', href: 'https://www.youtube.com/watch?v=c3EpWf5ooLk' },
+  ],
+};
+
+const captionLinkMap: Record<string, InlineLink[]> = {
+  'Tổng thống Pháp Francois Mitterrand (trái) trò chuyện cùng Đại tướng Võ Nguyên Giáp trong chuyến thăm Việt Nam vào tháng 2/1993. Ảnh: Reuters': [
+    { label: 'Tổng thống Pháp Francois Mitterrand (trái) trò chuyện cùng Đại tướng Võ Nguyên Giáp trong chuyến thăm Việt Nam vào tháng 2/1993. Ảnh: Reuters', href: 'https://vnexpress.net/nhung-dau-moc-trong-hanh-trinh-quan-he-viet-phap-4378251.html' },
+  ],
+  'Ngày 12/7/1995, Thủ tướng Việt Nam Võ Văn Kiệt tuyên bố bình thường hóa quan hệ Việt Nam – Mỹ. Tại thủ đô Washington, Tổng thống Mỹ Bill Clinton thông báo quyết định bình thường hóa quan hệ ngoại giao với Việt Nam (Ảnh: TTXVN).': [
+    { label: 'Ngày 12/7/1995, Thủ tướng Việt Nam Võ Văn Kiệt tuyên bố bình thường hóa quan hệ Việt Nam – Mỹ. Tại thủ đô Washington, Tổng thống Mỹ Bill Clinton thông báo quyết định bình thường hóa quan hệ ngoại giao với Việt Nam (Ảnh: TTXVN).', href: 'https://dantri.com.vn/the-gioi/nhung-dau-moc-quan-trong-trong-quan-he-viet-my-20230910112429395.htm' },
+  ],
+  'Lễ ký kết hiệp định thương mại Trung-Việt và hiệp định tạm thời về việc giải quyết công việc ở biên giới hai nước Trung Quốc – Việt Nam tại thủ đô Bắc Kinh, ngày 7/11/1991, trong chuyến thăm Trung Quốc của Tổng Bí thư Đỗ Mười và Chủ tịch Hội đồng Bộ trưởng Võ Văn Kiệt (5-10/11/1991). (Ảnh: TTXVN)': [
+    { label: 'Lễ ký kết hiệp định thương mại Trung-Việt và hiệp định tạm thời về việc giải quyết công việc ở biên giới hai nước Trung Quốc – Việt Nam tại thủ đô Bắc Kinh, ngày 7/11/1991, trong chuyến thăm Trung Quốc của Tổng Bí thư Đỗ Mười và Chủ tịch Hội đồng Bộ trưởng Võ Văn Kiệt (5-10/11/1991). (Ảnh: TTXVN)', href: 'https://vov.gov.vn/anh-nhin-lai-70-nam-quan-he-viet-nam-trung-quoc-dtnew-143354' },
+  ],
+  'Bộ trưởng Ngoại giao Nguyễn Mạnh Cầm ký Tuyên bố kết nạp Việt Nam trở thành thành viên chính thức của ASEAN ngày 28/7/1995, tại thủ đô Bandar Seri Begawan, Brunei. Ảnh: TTXVN': [
+    { label: 'Bộ trưởng Ngoại giao Nguyễn Mạnh Cầm ký Tuyên bố kết nạp Việt Nam trở thành thành viên chính thức của ASEAN ngày 28/7/1995, tại thủ đô Bandar Seri Begawan, Brunei. Ảnh: TTXVN', href: 'https://mekongasean.vn/30-nam-gia-nhap-asean-anh-le-ket-nap-viet-nam-tai-brunei-nam-1995-44118.html' },
+  ],
+  'Sáng 11/1/2007, tại trụ sở Tổ chức Thương mại Thế giới (WTO) ở Geneva (Thuỵ Sĩ) treo biểu ngữ "Chào mừng Việt Nam" bằng các thứ tiếng Anh, Pháp, Tây Ban Nha, khi Việt Nam chính thức trở thành thành viên thứ 150 của tổ chức thương mại lớn nhất thế giới này. (Ảnh: Lan Hương/TTXVN)': [
+    { label: 'Sáng 11/1/2007, tại trụ sở Tổ chức Thương mại Thế giới (WTO) ở Geneva (Thuỵ Sĩ) treo biểu ngữ "Chào mừng Việt Nam" bằng các thứ tiếng Anh, Pháp, Tây Ban Nha, khi Việt Nam chính thức trở thành thành viên thứ 150 của tổ chức thương mại lớn nhất thế giới này. (Ảnh: Lan Hương/TTXVN)', href: 'https://hungyen.dcs.vn/18-nam-viet-nam-gia-nhap-wto-hanh-trinh-hoi-nhap-va-phat-trien-c222429.html' },
+  ],
+  'Hai bên khẳng định việc ký kết Thông cáo chung hôm nay là một dấu mốc lịch sử, đặt nền móng cho quan hệ hợp tác giữa hai nước – Ảnh: BNG': [
+    { label: 'Hai bên khẳng định việc ký kết Thông cáo chung hôm nay là một dấu mốc lịch sử, đặt nền móng cho quan hệ hợp tác giữa hai nước – Ảnh: BNG', href: 'https://baochinhphu.vn/viet-nam-va-tuvalu-thiet-lap-quan-he-ngoai-giao-102250925080757632.htm' },
+  ],
+  'Lễ mở ký Công ước Hà Nội đã thu hút được 72 nước ký kết Công ước trong 2 ngày 25 – 26/10/2025, trong đó có 64 quốc gia đã ký ngay trong Phiên ký tại Hội trường chính. Mang ý nghĩa: Khẳng định vai trò, uy tín của Việt Nam trong việc chủ động kiến tạo khuôn khổ pháp lý quốc tế về an ninh mạng.': [
+    { label: 'Lễ mở ký Công ước Hà Nội đã thu hút được 72 nước ký kết Công ước trong 2 ngày 25 – 26/10/2025, trong đó có 64 quốc gia đã ký ngay trong Phiên ký tại Hội trường chính. Mang ý nghĩa: Khẳng định vai trò, uy tín của Việt Nam trong việc chủ động kiến tạo khuôn khổ pháp lý quốc tế về an ninh mạng.', href: 'https://vtv.vn/72-nuoc-da-ky-ket-cong-uoc-ha-noi-trong-2-ngay-25-26-10-10025102621455026.htm' },
+  ],
+};
 
 /* ─── Inline Carousel Component (matches Figma design) ── */
 function ThanhTuuCarousel({ slides }: { slides: CarouselSlide[] }) {
@@ -89,7 +196,7 @@ function ThanhTuuCarousel({ slides }: { slides: CarouselSlide[] }) {
               ))}
             </ul>
             <p style={{ fontSize: 16, fontStyle: 'italic', color: '#555', marginTop: 16, lineHeight: 1.5 }}>
-              {slide.source}
+              {renderLinkedText(slide.source, sourceLinkMap[slide.source] ?? [])}
             </p>
           </div>
           {/* Spacer */}
@@ -120,7 +227,7 @@ function ThanhTuuCarousel({ slides }: { slides: CarouselSlide[] }) {
             ))}
           </ul>
           <p style={{ fontSize: 17, fontStyle: 'italic', color: '#555', marginTop: 18, lineHeight: 1.5 }}>
-            {slide.source}
+            {renderLinkedText(slide.source, sourceLinkMap[slide.source] ?? [])}
           </p>
         </div>
       )}
@@ -400,7 +507,9 @@ export default function ThanhTuu() {
                     textDecorationColor: '#bbb',
                     padding: '0 0 0 8px',
                     margin: 0,
-                  }}>{item.text}</p>
+                  }}>
+                    {renderLinkedText(item.text, captionLinkMap[item.text] ?? [])}
+                  </p>
                 )}
               </div>
             ))}

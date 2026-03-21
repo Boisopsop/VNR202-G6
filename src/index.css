@@ -17,6 +17,7 @@
   --content-max: 1339px;
   --font: 'Be Vietnam Pro', sans-serif;
   --transition: 0.3s cubic-bezier(.4,0,.2,1);
+  --transition-slow: 0.55s cubic-bezier(.22,.61,.36,1);
 }
 
 html { scroll-behavior: smooth; }
@@ -51,7 +52,7 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
   to   { opacity: 1; transform: translateY(0); }
 }
 .page-transition {
-  animation: pageIn 0.35s ease-out both;
+  animation: pageIn 0.45s cubic-bezier(.22,.61,.36,1) both;
 }
 
 /* Portrait carousel swap animation (mượt hơn khi đổi nhân vật) */
@@ -66,15 +67,42 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
 @media (prefers-reduced-motion: reduce) {
   .portrait-current-swap { animation: none; }
   .page-transition { animation: none; }
+  .section-banner::before { animation: none; }
+  .anim-fade-up,
+  .anim-slide-left,
+  .anim-pop,
+  .info-card,
+  .leader-card,
+  .carousel-card,
+  .red-block,
+  a {
+    transition: none !important;
+  }
 }
 /* Default: hidden until .visible is added by IntersectionObserver */
 .anim-fade-up   { opacity: 0; transform: translateY(28px); transition: opacity 0.55s ease-out, transform 0.55s ease-out; }
 .anim-slide-left { opacity: 0; transform: translateX(-24px); transition: opacity 0.55s ease-out, transform 0.55s ease-out; }
 .anim-pop       { opacity: 0; transform: scale(0.93); transition: opacity 0.45s ease-out, transform 0.45s ease-out; }
+.anim-fade-up,
+.anim-slide-left,
+.anim-pop { will-change: transform, opacity; }
 
 .anim-fade-up.visible   { opacity: 1; transform: translateY(0); }
 .anim-slide-left.visible { opacity: 1; transform: translateX(0); }
 .anim-pop.visible       { opacity: 1; transform: scale(1); }
+.anim-fade-up.visible:nth-of-type(2) { transition-delay: 0.04s; }
+.anim-fade-up.visible:nth-of-type(3) { transition-delay: 0.08s; }
+.anim-fade-up.visible:nth-of-type(4) { transition-delay: 0.12s; }
+
+/* Explicit stagger (use with IntersectionObserver + .visible) */
+.anim-fade-up.stagger-1.visible { transition-delay: 0.05s; }
+.anim-fade-up.stagger-2.visible { transition-delay: 0.1s; }
+.anim-fade-up.stagger-3.visible { transition-delay: 0.15s; }
+.anim-fade-up.stagger-4.visible { transition-delay: 0.2s; }
+.anim-fade-up.stagger-5.visible { transition-delay: 0.25s; }
+.anim-fade-up.stagger-6.visible { transition-delay: 0.3s; }
+.anim-fade-up.stagger-7.visible { transition-delay: 0.35s; }
+.anim-fade-up.stagger-8.visible { transition-delay: 0.4s; }
 
 /* Stagger delays */
 .delay-1 { animation-delay: 0.05s; }
@@ -113,6 +141,7 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
   text-align: center;
   position: relative;
   overflow: hidden;
+  transform: translateZ(0);
 }
 .section-banner::after {
   content: '';
@@ -121,13 +150,36 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
   border-radius: inherit;
   pointer-events: none;
 }
+.section-banner::before {
+  content: '';
+  position: absolute;
+  top: -120%;
+  left: -35%;
+  width: 28%;
+  height: 320%;
+  transform: rotate(18deg);
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: bannerSheen 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
 .banner-title {
-  position: relative; z-index: 1;
+  position: relative; z-index: 2;
   font-family: 'La Co', 'Be Vietnam Pro', serif;
   font-size: 34px; font-weight: 700; color: var(--yellow);
   text-transform: uppercase; line-height: 1.25;
   text-shadow: 1px 2px 6px rgba(0,0,0,.55);
   letter-spacing: 0.5px;
+}
+@keyframes bannerSheen {
+  0%, 70% { transform: translateX(-130%) rotate(18deg); opacity: 0; }
+  78% { opacity: 1; }
+  100% { transform: translateX(520%) rotate(18deg); opacity: 0; }
 }
 
 /* ── Info card ───────────────────────────────────── */
@@ -138,11 +190,22 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
   max-width: var(--content-max);
   margin: 20px auto 0;
   padding: 32px 48px;
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  border: 1px solid rgba(215, 25, 32, 0.08);
+  position: relative;
+  overflow: hidden;
 }
 .info-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-hover);
+  border-color: rgba(215, 25, 32, 0.22);
+}
+.info-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(1200px 120px at 20% 0%, rgba(255,255,255,0.35), transparent 60%);
+  pointer-events: none;
 }
 
 .section-heading {
@@ -172,9 +235,9 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
   max-width: var(--content-max);
   margin: 20px auto 0;
   padding: 32px 64px 40px;
-  transition: box-shadow var(--transition);
+  transition: box-shadow var(--transition), transform var(--transition);
 }
-.carousel-card:hover { box-shadow: var(--shadow-hover); }
+.carousel-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
 .carousel-outer { display: flex; align-items: center; gap: 0; }
 .carousel-arrow-side { flex-shrink: 0; width: 52px; display: flex; align-items: center; justify-content: center; }
 .carousel-slides-wrap { flex: 1; min-width: 0; }
@@ -200,11 +263,16 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
   align-items: flex-start;
   justify-content: flex-start;
   gap: 22px;
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
   position: relative;
   min-height: 240px;
+  border: 1px solid rgba(215, 25, 32, 0.08);
 }
-.leader-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+.leader-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(215, 25, 32, 0.22);
+}
 .leader-flag {
   position: absolute;
   top: 14px;
@@ -244,6 +312,13 @@ body { font-family: var(--font); background: #fff; overflow-x: hidden; zoom: 0.9
 
 /* ── Nav hover ───────────────────────────────────── */
 nav a { transition: background var(--transition), color var(--transition) !important; }
+a {
+  transition: color var(--transition), text-decoration-color var(--transition), text-underline-offset var(--transition);
+}
+a:hover {
+  text-decoration-color: rgba(0, 0, 0, 0.65);
+  text-underline-offset: 4px;
+}
 
 /* ── Standalone section heading (no card) ───────── */
 .section-standalone-heading {
@@ -263,9 +338,9 @@ nav a { transition: background var(--transition), color var(--transition) !impor
   max-width: var(--content-max);
   margin: 20px auto 0;
   padding: 36px 48px;
-  transition: box-shadow var(--transition);
+  transition: box-shadow var(--transition), transform var(--transition);
 }
-.red-block:hover { box-shadow: var(--shadow-hover); }
+.red-block:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
 
 /* ── Modal helpers ─────────────────────────────────── */
 .no-scrollbar {

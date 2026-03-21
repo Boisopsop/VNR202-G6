@@ -927,9 +927,21 @@ function DoiMoiModal({ item, onClose }: { item: typeof doiMoiData[0]; onClose: (
     return () => window.removeEventListener('resize', recalc);
   }, [item.label, isEconomy]);
 
+  useEffect(() => {
+    // Lock background scrolling/interactions while modal is open.
+    const prevOverflow = document.body.style.overflow;
+    const prevTouchAction = document.body.style.touchAction;
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.body.style.touchAction = prevTouchAction;
+    };
+  }, []);
+
   return (
     <div
-      onClick={onClose}
       style={{
         position: 'fixed',
         inset: 0,
@@ -1126,28 +1138,78 @@ export default function DaiHoiVI() {
         TINH THẦN ĐỔI MỚI CỦA ĐẠI HỘI
       </div>
 
-      {/* Yellow quote card */}
-      <div className="info-card anim-fade-up" style={{ textAlign: 'center' }}>
-        <p style={{ fontWeight: 700, fontSize: 24, color: 'var(--red)', textTransform: 'uppercase', lineHeight: 1.5 }}>
-          "NHÌN THẲNG VÀO SỰ THẬT, ĐÁNH GIÁ ĐÚNG SỰ THẬT, NÓI RÕ SỰ THẬT."
-        </p>
-      </div>
+      {/* 7. Two congress photos + captions (match Figma layout) */}
+      <div
+        className="anim-fade-up"
+        style={{
+          maxWidth: 1180,
+          margin: '8px auto 0',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 12,
+        }}
+      >
+        <div>
+          <img
+            className="hist-img"
+            src="/images/nvl_khai_mac.jpg"
+            alt="Đồng chí Nguyễn Văn Linh – Ủy viên Bộ Chính trị đọc diễn văn khai mạc Đại hội. (Ảnh: TTXVN)"
+            style={{ width: '92%', margin: '0 auto', aspectRatio: '16 / 10', objectFit: 'cover' }}
+          />
+          <a
+            href="https://daihoidangtoanquoc.vn/dien-van-khai-mac-dai-hoi-dai-bieu-toan-quoc-lan-thu-vi-cua-dang-post1613.html"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              marginTop: 8,
+              display: 'block',
+              textAlign: 'center',
+              fontSize: 16,
+              lineHeight: 1.35,
+              fontStyle: 'italic',
+              color: '#222',
+              textDecorationLine: 'underline',
+              textDecorationColor: 'rgba(34,34,34,0.38)',
+              textDecorationThickness: '1px',
+              textUnderlineOffset: '3px',
+            }}
+          >
+            Đồng chí Nguyễn Văn Linh – Ủy viên Bộ Chính trị đọc diễn văn
+            <br />
+            khai mạc Đại hội.(Ảnh: TTXVN)
+          </a>
+        </div>
 
-      {/* 7. Large congress photo */}
-      <div className="img-center-wrap anim-fade-up" style={{ marginTop: 8 }}>
-        <img
-          className="hist-img congress"
-          src="/images/nvl_khai_mac.jpg"
-          alt="Đồng chí Nguyễn Văn Linh đọc diễn văn khai mạc Đại hội. Ảnh: TTXVN"
-          style={{ width: '82%', display: 'block', margin: '0 auto' }}
-        />
-      </div>
-
-      {/* Caption */}
-      <div style={{ maxWidth: 'var(--content-max)', margin: '8px auto 0', textAlign: 'center' }}>
-        <p style={{ fontSize: 14, fontStyle: 'italic', color: '#444', textDecoration: 'underline' }}>
-          Đồng chí Nguyễn Văn Linh – Ủy viên Bộ Chính trị đọc diễn văn khai mạc Đại hội. (Ảnh: TTXVN)
-        </p>
+        <div>
+          <img
+            className="hist-img"
+            src="/images/truong_chinh_ttxvn.png"
+            alt="Đồng chí Trường Chinh đọc Báo cáo chính trị tại Đại hội lần thứ VI của Đảng, tháng 12-1986."
+            style={{ width: '92%', margin: '0 auto', aspectRatio: '16 / 10', objectFit: 'cover' }}
+          />
+          <a
+            href="https://www.sggp.org.vn/dong-chi-truong-chinh-tong-bi-thu-cua-doi-moi-post213044.html"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              marginTop: 8,
+              display: 'block',
+              textAlign: 'center',
+              fontSize: 16,
+              lineHeight: 1.35,
+              fontStyle: 'italic',
+              color: '#222',
+              textDecorationLine: 'underline',
+              textDecorationColor: 'rgba(34,34,34,0.38)',
+              textDecorationThickness: '1px',
+              textUnderlineOffset: '3px',
+            }}
+          >
+            Đồng chí Trường Chinh đọc Báo cáo chính trị tại Đại hội lần thứ VI
+            <br />
+            của Đảng, tháng 12-1986.
+          </a>
+        </div>
       </div>
 
       {/* 8. Pink long quote card */}
@@ -1155,7 +1217,7 @@ export default function DaiHoiVI() {
         background: 'var(--pink-light)', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow)',
         maxWidth: 'var(--content-max)', margin: '20px auto 0', padding: '36px 48px',
       }}>
-        <p className="body-text" style={{ fontWeight: 700, fontStyle: 'italic', lineHeight: 1.75 }}>
+        <p className="body-text" style={{ fontWeight: 400, fontStyle: 'italic', lineHeight: 1.75 }}>
           "Chỉ có đổi mới thì mới thấy đúng và thấy hết sự thật, thấy những nhân tố mới để phát huy,
           những sai lầm để sửa chữa, nhằm vận dụng tốt chủ nghĩa Mác-Lênin vào hoàn cảnh nước ta,
           phát huy truyền thống lịch sử và cách mạng của dân tộc, động viên tính năng động, sáng tạo
@@ -1205,7 +1267,7 @@ export default function DaiHoiVI() {
         <p style={{ color: '#fff', fontSize: 20, lineHeight: 1.8, marginBottom: 16 }}>
           Đại hội VI năm 1986 có ý nghĩa đặc biệt quan trọng trong lịch sử Việt Nam như:
         </p>
-        <ul style={{ color: '#fff', fontSize: 20, lineHeight: 2.1, paddingLeft: 22, marginBottom: 18 }}>
+        <ul style={{ color: '#fff', fontSize: 20, lineHeight: 2.1, paddingLeft: 28, marginBottom: 18, listStyleType: 'disc' }}>
           <li>Khởi xướng <strong style={{ color: '#FFFF00' }}>công cuộc Đổi mới toàn diện</strong> đất nước</li>
           <li>Thay đổi <strong style={{ color: '#FFFF00' }}>tư duy phát triển kinh tế</strong></li>
           <li>Tạo nền tảng cho nền kinh tế vận hành theo <strong style={{ color: '#FFFF00' }}>cơ chế thị trường định hướng xã hội chủ nghĩa</strong></li>

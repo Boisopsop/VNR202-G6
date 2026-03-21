@@ -8,6 +8,13 @@ function SubItem({ children, color = 'var(--red)' }: { children: React.ReactNode
   );
 }
 
+const mutedUnderlineCaptionStyle: React.CSSProperties = {
+  textDecorationLine: 'underline',
+  textDecorationColor: 'rgba(51,51,51,0.36)',
+  textDecorationThickness: '1px',
+  textUnderlineOffset: '3px',
+};
+
 export default function BienDong() {
   return (
     <>
@@ -33,20 +40,30 @@ export default function BienDong() {
             width: '100%', height: 340, objectFit: 'cover',
             borderRadius: 16, display: 'block', boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
           }} />
-          <p style={{ marginTop: 8, fontSize: 15, fontStyle: 'italic', lineHeight: 1.5,
-            color: '#333', textDecoration: 'underline', textAlign: 'right' }}>
+          <a
+            href="https://media.qdnd.vn/long-form/30-nam-lien-xo-sup-do-va-bai-hoc-cho-viet-nam-bai-1-khi-dang-cong-san-tu-xoa-bo-chinh-minh-53205"
+            target="_blank"
+            rel="noreferrer"
+            style={{ marginTop: 8, fontSize: 15, fontStyle: 'italic', lineHeight: 1.5,
+              color: '#333', textAlign: 'right', display: 'block', ...mutedUnderlineCaptionStyle }}
+          >
             Người dân Litva (nước thành viên của Liên Xô) tụ tập ở thủ đô Vilnius vào ngày 12-1-1990 để đòi tách khỏi Liên Xô. Litva là nước cộng hòa Xô viết đầu tiên tuyên bố độc lập. Ảnh: Getty. (Báo điện tử Quân đội nhân dân)
-          </p>
+          </a>
         </div>
         <div>
           <img src="/images/lienxo_2.jpg" alt="Gorbachev tại Vilnius" style={{
             width: '100%', height: 340, objectFit: 'cover',
             borderRadius: 16, display: 'block', boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
           }} />
-          <p style={{ marginTop: 8, fontSize: 15, fontStyle: 'italic', lineHeight: 1.5,
-            color: '#333', textDecoration: 'underline', textAlign: 'right' }}>
+          <a
+            href="https://media.qdnd.vn/long-form/30-nam-lien-xo-sup-do-va-bai-hoc-cho-viet-nam-bai-1-khi-dang-cong-san-tu-xoa-bo-chinh-minh-53205"
+            target="_blank"
+            rel="noreferrer"
+            style={{ marginTop: 8, fontSize: 15, fontStyle: 'italic', lineHeight: 1.5,
+              color: '#333', textAlign: 'right', display: 'block', ...mutedUnderlineCaptionStyle }}
+          >
             Tổng thống Liên Xô Mikhail Gorbachev (giữa) đang nói chuyện với cư dân Vilnius, Litva, vào ngày 11-1-1990 trong một nỗ lực làm chậm lại quá trình ly khai của nước cộng hòa này. Ảnh: AP. (Báo điện tử Quân đội nhân dân)
-          </p>
+          </a>
         </div>
       </div>
 
@@ -169,10 +186,15 @@ export default function BienDong() {
         <img src="/images/daihoi_vi_tuli.jpg" alt="Đại hội đại biểu toàn quốc lần thứ VI"
           style={{ width: '100%', maxWidth: 887, display: 'block', margin: '0 auto',
             borderRadius: 16, boxShadow: '0 4px 20px rgba(0,0,0,0.25)' }} />
-        <p style={{ maxWidth: 887, margin: '10px auto 0', fontSize: 15, fontStyle: 'italic',
-          textDecoration: 'underline', textAlign: 'center', color: '#333', lineHeight: 1.5 }}>
+        <a
+          href="https://www.qdnd.vn/chinh-tri/tin-tuc/cac-ky-dai-hoi-cua-dang-va-nhung-dau-an-lich-su-dai-hoi-lan-thu-vi-khoi-xuong-va-lanh-dao-su-nghiep-doi-moi-dat-nuoc-813798"
+          target="_blank"
+          rel="noreferrer"
+          style={{ maxWidth: 887, margin: '10px auto 0', fontSize: 15, fontStyle: 'italic',
+            textAlign: 'center', color: '#333', lineHeight: 1.5, display: 'block', ...mutedUnderlineCaptionStyle }}
+        >
           Đại hội đại biểu toàn quốc lần thứ VI của Đảng. Ảnh tư liệu: Báo Nhân Dân (Báo Quân đội Nhân dân)
-        </p>
+        </a>
       </div>
 
       {/* 7. Yellow card – Đẩy mạnh công cuộc Đổi mới toàn diện */}
