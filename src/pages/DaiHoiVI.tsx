@@ -1216,8 +1216,8 @@ export default function DaiHoiVI() {
         background: 'var(--red)', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow)',
         maxWidth: 'var(--content-max)', margin: '20px auto 0', padding: '28px 48px',
       }}>
-        <p style={{ fontWeight: 700, fontSize: 22, color: 'var(--yellow)', lineHeight: 1.5 }}>
-          Thể hiện sự thẳng thắn nhìn nhận những hạn chế trong quản lý kinh tế và xã hội trước đó như:
+        <p style={{ fontWeight: 700, fontSize: 22, color: 'var(--yellow)', lineHeight: 1.5, textAlign: 'center' }}>
+          Thể hiện sự thẳng thắn nhìn nhận những hạn chế trong quản lý kinh tế và xã hội trước đó như
         </p>
       </div>
 
