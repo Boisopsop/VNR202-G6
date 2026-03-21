@@ -563,7 +563,7 @@ function DoiMoiKinhTeContent() {
           </ul>
 
           <p style={{ marginTop: 14 }}>
-            <span style={{ color: '#000', fontWeight: 700 }}>Nền kinh tế nhiều thành phần:</span> gồm kinh tế nhà nước, tập thể, tư nhân, cá thể và có vốn đầu tư nước ngoài.
+            <span style={{ color: '#000', fontWeight: 700 }}>Nền kinh tế nhiều thành phần:</span> gồm Kinh tế Nhà nước, Kinh tế Tập thể, Kinh tế Tư bản tư nhân, Kinh tế cá thể, tiểu chủ, Kinh tế có vốn đầu tư nước ngoài (FDI).
           </p>
 
           <p style={{ marginTop: 14 }}>
@@ -1207,7 +1207,7 @@ export default function DaiHoiVI() {
           xây dựng chủ nghĩa xã hội và bảo vệ Tổ quốc"
         </p>
         <p style={{ fontSize: 15, fontStyle: 'italic', color: '#555', marginTop: 14, textAlign: 'right' }}>
-          — (Đồng chí Nguyễn Văn Linh – Ủy viên Bộ Chính trị)
+          (Đồng chí Nguyễn Văn Linh – Ủy viên Bộ Chính trị)
         </p>
       </div>
 
